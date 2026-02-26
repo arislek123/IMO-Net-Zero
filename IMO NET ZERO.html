@@ -1,0 +1,1695 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IMO Net-Zero (GFI) Compliance Suite — Demo</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121a33;
+      --panel2:#0f1630;
+      --text:#eaf0ff;
+      --muted:#a8b3d6;
+      --accent:#6ea8fe;
+      --good:#32d583;
+      --bad:#ff6b6b;
+      --warn:#ffd166;
+      --border:rgba(255,255,255,.12);
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans);
+      background: radial-gradient(1000px 600px at 15% 10%, rgba(110,168,254,.18), transparent 60%),
+                  radial-gradient(900px 500px at 90% 20%, rgba(50,213,131,.12), transparent 60%),
+                  linear-gradient(180deg, #070b16, var(--bg));
+      color:var(--text);
+    }
+    a{color:var(--accent)}
+    header{
+      padding:22px 18px 16px;
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(7,11,22,.88), rgba(7,11,22,.55));
+      border-bottom:1px solid var(--border);
+    }
+    .wrap{max-width:1200px; margin:0 auto; padding:0 10px;}
+    .toprow{display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;}
+    .brand{display:flex; gap:12px; align-items:center;}
+    .logo{
+      width:44px; height:44px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(110,168,254,.95), rgba(50,213,131,.95));
+      box-shadow: 0 10px 22px rgba(110,168,254,.18);
+      display:grid; place-items:center;
+      font-weight:800; color:#071024;
+    }
+    .title h1{margin:0; font-size:16px; letter-spacing:.2px;}
+    .title p{margin:2px 0 0; color:var(--muted); font-size:13px;}
+    .chiprow{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .chip{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px;
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .chip b{color:var(--text); font-weight:700}
+    main{padding:18px 0 40px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap:16px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(18,26,51,.88), rgba(15,22,48,.85));
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      overflow:hidden;
+    }
+    .cardhead{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--border);
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    }
+    .cardhead h2{
+      margin:0; font-size:14px; letter-spacing:.2px;
+      display:flex; gap:10px; align-items:center;
+    }
+    .badge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      background: rgba(255,255,255,.04);
+    }
+    .body{padding:14px}
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:10px 14px; border-bottom:1px solid var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    .tab{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s transform ease, .15s background ease;
+    }
+    .tab:hover{transform: translateY(-1px)}
+    .tab.active{
+      color: var(--text);
+      background: rgba(110,168,254,.18);
+      border-color: rgba(110,168,254,.45);
+    }
+    .tabpanes > section{display:none}
+    .tabpanes > section.active{display:block}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end}
+    .col{flex:1 1 220px}
+    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
+    input, select, textarea{
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(7,11,22,.38);
+      color: var(--text);
+      outline:none;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(110,168,254,.6);
+      box-shadow: 0 0 0 4px rgba(110,168,254,.15);
+    }
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    button{
+      border:none;
+      background: rgba(110,168,254,.88);
+      color:#071024;
+      font-weight:800;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:.15s transform ease, .15s filter ease;
+    }
+    button:hover{transform: translateY(-1px); filter:brightness(1.05)}
+    button.secondary{
+      background: rgba(255,255,255,.07);
+      color: var(--text);
+      border:1px solid var(--border);
+      font-weight:700;
+    }
+    button.danger{
+      background: rgba(255,107,107,.88);
+      color:#25090a;
+    }
+    .hint{color:var(--muted); font-size:12px; line-height:1.35}
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background: rgba(7,11,22,.25);
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      font-size:13px;
+      text-align:left;
+      vertical-align:middle;
+    }
+    th{
+      font-size:12px;
+      color:var(--muted);
+      background: rgba(255,255,255,.03);
+      position:sticky; top:0;
+    }
+    tr:last-child td{border-bottom:none}
+    .num{font-family:var(--mono)}
+    .pill{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      display:inline-flex; gap:8px; align-items:center;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+    }
+    .pill.good{border-color: rgba(50,213,131,.35); background: rgba(50,213,131,.12); color:#bff5da}
+    .pill.bad{border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.12); color:#ffd2d2}
+    .pill.warn{border-color: rgba(255,209,102,.35); background: rgba(255,209,102,.12); color:#ffe7b5}
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media(max-width:520px){ .kpi{grid-template-columns:1fr} }
+    .kbox{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:16px;
+      padding:12px;
+    }
+    .kbox .k{font-size:12px; color:var(--muted)}
+    .kbox .v{margin-top:4px; font-size:18px; font-weight:900}
+    .kbox .s{margin-top:4px; color:var(--muted); font-size:12px}
+    .divider{height:1px; background: rgba(255,255,255,.08); margin:12px 0}
+    .small{font-size:12px; color:var(--muted)}
+    .svgwrap{
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      padding:10px;
+      overflow:auto;
+    }
+    .toast{
+      position: fixed; right: 16px; bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(15,22,48,.92);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      max-width: 360px;
+      display:none;
+      z-index: 999;
+    }
+    .toast.show{display:block}
+    .toast b{display:block; margin-bottom:2px}
+    .mutedline{color:var(--muted); font-size:12px}
+    .rightcol .card{position:sticky; top:92px}
+    @media(max-width:980px){ .rightcol .card{position:static} }
+    .sr{position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden}
+    .footnote{font-size:12px; color:var(--muted); line-height:1.4}
+    .codebox{
+      font-family:var(--mono); font-size:12px;
+      white-space:pre-wrap;
+      background: rgba(7,11,22,.35);
+      border:1px solid var(--border);
+      padding:10px;
+      border-radius:14px;
+      max-height: 280px;
+      overflow:auto;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="toprow">
+      <div class="brand">
+        <div class="logo">GFI</div>
+        <div class="title">
+          <h1>IMO Net-Zero (GFI) Compliance Suite — User-friendly Demo</h1>
+          <p>Υπολογισμός Attained GFI, στόχου, deficit/surplus, RUs, σενάρια, pooling, sensitivity, audit trail.</p>
+        </div>
+      </div>
+      <div class="chiprow">
+        <div class="chip">Έτος συμμόρφωσης: <b id="chipYear">2028</b></div>
+        <div class="chip">Μονάδα: <b>gCO₂e/MJ</b></div>
+        <div class="chip">Μοντέλο: <b>Well-to-Wake</b></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="grid">
+
+      <!-- LEFT: MAIN APP -->
+      <div class="card">
+        <div class="tabs" role="tablist" aria-label="Tabs">
+          <div class="tab active" role="tab" aria-selected="true" data-tab="calc">Υπολογιστής</div>
+          <div class="tab" role="tab" aria-selected="false" data-tab="scenario">Σενάρια / What-if</div>
+          <div class="tab" role="tab" aria-selected="false" data-tab="pool">Pooling (Fleet)</div>
+          <div class="tab" role="tab" aria-selected="false" data-tab="sens">Sensitivity</div>
+          <div class="tab" role="tab" aria-selected="false" data-tab="audit">Audit / Export</div>
+        </div>
+
+        <div class="tabpanes">
+          <!-- TAB 1: CALCULATOR -->
+          <section id="tab-calc" class="active">
+            <div class="body">
+              <div class="row">
+                <div class="col">
+                  <label for="year">Έτος συμμόρφωσης</label>
+                  <select id="year">
+                    <option>2028</option>
+                    <option>2029</option>
+                    <option>2030</option>
+                    <option>2031</option>
+                    <option>2032</option>
+                    <option>2035</option>
+                    <option>2040</option>
+                    <option>2050</option>
+                  </select>
+                </div>
+
+                <div class="col">
+                  <label for="refGFI">Reference GFI (baseline)</label>
+                  <input id="refGFI" type="number" step="0.01" value="93.30" />
+                  <div class="hint">Συνήθως ~93.3 gCO₂e/MJ (baseline). Μπορείς να το αλλάξεις.</div>
+                </div>
+
+                <div class="col">
+                  <label for="reduction">Μείωση στόχου για το έτος (%)</label>
+                  <input id="reduction" type="number" step="0.1" value="5.0" />
+                  <div class="hint">Απλό demo: Target = Reference × (1 − reduction%).</div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="row">
+                <div class="col">
+                  <label for="engineType">Τύπος μηχανής (για LNG methane slip)</label>
+                  <select id="engineType">
+                    <option value="none">— Δεν χρησιμοποιώ LNG / αγνόησε slip —</option>
+                    <option value="2s_df_lp">2-stroke DF (LP) (τυπικό slip)</option>
+                    <option value="4s_df">4-stroke DF (τυπικό slip)</option>
+                    <option value="hpdi">HPDI (χαμηλό slip)</option>
+                    <option value="custom">Custom slip</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="slipPct">Methane slip (%) πάνω στο LNG WtW*</label>
+                  <input id="slipPct" type="number" step="0.1" value="2.0" />
+                  <div class="hint">*Demo διόρθωση: αυξάνει το LNG GHG intensity (όχι επίσημο εργαλείο IMO).</div>
+                </div>
+                <div class="col">
+                  <label for="includeCH4N2O">Συμπερίλαβε CH₄ & N₂O</label>
+                  <select id="includeCH4N2O">
+                    <option value="yes" selected>Ναι (CO₂e)</option>
+                    <option value="no">Όχι (μόνο CO₂)</option>
+                  </select>
+                  <div class="hint">Για απλότητα, το demo θεωρεί ότι τα fuel factors είναι ήδη gCO₂e/MJ.</div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="row" style="align-items:center; justify-content:space-between">
+                <h2 style="margin:0; font-size:14px;">Καύσιμα (Annual Fuel Consumption)</h2>
+                <div class="btnrow">
+                  <button class="secondary" id="btnLoadSample" type="button">Φόρτωσε παράδειγμα</button>
+                  <button class="secondary" id="btnAddFuel" type="button">+ Custom Fuel</button>
+                  <button class="secondary" id="btnImportCSV" type="button">Import CSV</button>
+                  <input class="sr" id="fileCSV" type="file" accept=".csv,text/csv" />
+                </div>
+              </div>
+
+              <div class="hint" style="margin:8px 0 10px">
+                Συμπλήρωσε <b>tonnes</b> και προαιρετικά <b>USD/MT</b>. Τα <b>LHV</b> και <b>GHG intensity</b> μπορούν να τροποποιηθούν.
+              </div>
+
+              <div style="max-height:360px; overflow:auto; border-radius:14px;">
+                <table id="fuelTable" aria-label="Fuel table">
+                  <thead>
+                    <tr>
+                      <th>Fuel</th>
+                      <th class="num">LHV (MJ/t)</th>
+                      <th class="num">GHG Intensity (gCO₂e/MJ)</th>
+                      <th class="num">Tonnes</th>
+                      <th class="num">Price (USD/MT)</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="row">
+                <div class="col">
+                  <label for="surplusPrice">Surplus unit trading price (USD/unit)</label>
+                  <input id="surplusPrice" type="number" step="1" value="240" />
+                </div>
+                <div class="col">
+                  <label for="ruTier1">Tier 1 RU price (USD/tCO₂e)</label>
+                  <input id="ruTier1" type="number" step="1" value="145" />
+                </div>
+                <div class="col">
+                  <label for="ruTier2">Tier 2 RU price (USD/tCO₂e)</label>
+                  <input id="ruTier2" type="number" step="1" value="380" />
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="btnrow">
+                <button id="btnCalculate" type="button">Υπολόγισε GFI</button>
+                <button class="secondary" id="btnOptimize" type="button">Optimize fuel share (demo)</button>
+                <button class="secondary" id="btnClear" type="button">Reset</button>
+              </div>
+
+              <div class="hint" style="margin-top:10px">
+                <b>Optimize (demo):</b> Αν υπάρχει έστω 1 “low-carbon” καύσιμο (π.χ. biofuel/e-fuel), θα βρει πόσο % πρέπει να αντικαταστήσεις ώστε να πιάσεις το target με ελάχιστο “fuel+RU” κόστος (απλοποιημένη λογική).
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB 2: SCENARIOS -->
+          <section id="tab-scenario">
+            <div class="body">
+              <h2 style="margin:0 0 8px; font-size:14px;">Σενάρια (What-if) — γρήγορα sliders</h2>
+              <p class="hint" style="margin-top:0">
+                Εδώ παίζεις με παραμέτρους (RU τιμές, biofuel premium, slip) και βλέπεις άμεσα την επίδραση σε deficit/surplus και κόστος.
+              </p>
+
+              <div class="row">
+                <div class="col">
+                  <label for="scBioPremium">Biofuel premium (USD/MT) — προσθήκη στο biofuel price</label>
+                  <input id="scBioPremium" type="range" min="0" max="800" step="10" value="200" />
+                  <div class="pill"><span>Premium:</span> <b id="scBioPremiumVal" class="num">200</b></div>
+                </div>
+                <div class="col">
+                  <label for="scRU">RU price multiplier</label>
+                  <input id="scRU" type="range" min="0.5" max="2.0" step="0.05" value="1.0" />
+                  <div class="pill"><span>×</span> <b id="scRUVal" class="num">1.00</b></div>
+                </div>
+                <div class="col">
+                  <label for="scSlip">Methane slip override (%)</label>
+                  <input id="scSlip" type="range" min="0" max="6" step="0.1" value="2.0" />
+                  <div class="pill"><span>Slip:</span> <b id="scSlipVal" class="num">2.0</b></div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="btnrow">
+                <button id="btnScenarioApply" type="button">Εφάρμοσε σενάριο & υπολόγισε</button>
+                <button class="secondary" id="btnScenarioReset" type="button">Reset σενάριο</button>
+              </div>
+
+              <div class="divider"></div>
+              <div class="svgwrap">
+                <svg id="scenarioChart" width="980" height="220" viewBox="0 0 980 220" role="img" aria-label="Scenario chart"></svg>
+                <div class="hint" style="margin-top:8px">
+                  Το γράφημα δείχνει <b>Attained GFI</b> vs <b>Target</b> και εκτιμώμενο κόστος.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB 3: POOLING -->
+          <section id="tab-pool">
+            <div class="body">
+              <h2 style="margin:0 0 8px; font-size:14px;">Pooling (Fleet) — απλό allocation surplus → deficit</h2>
+              <p class="hint" style="margin-top:0">
+                Πρόσθεσε πλοία, δώσε για κάθε πλοίο το <b>Compliance Balance</b> (surplus + / deficit −) σε “units”.
+                Μετά κάνε auto-allocate ώστε να ελαχιστοποιηθεί το ακάλυπτο deficit.
+              </p>
+
+              <div class="row">
+                <div class="col">
+                  <label for="vesselName">Όνομα πλοίου</label>
+                  <input id="vesselName" placeholder="π.χ. MV KAMSARMAX 01" />
+                </div>
+                <div class="col">
+                  <label for="vesselBal">Balance units ( + surplus / − deficit )</label>
+                  <input id="vesselBal" type="number" step="1" placeholder="π.χ. -1200 ή 450" />
+                </div>
+                <div class="col">
+                  <button id="btnAddVessel" type="button">+ Προσθήκη</button>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div style="max-height:280px; overflow:auto; border-radius:14px;">
+                <table id="poolTable" aria-label="Pooling table">
+                  <thead>
+                    <tr>
+                      <th>Vessel</th>
+                      <th class="num">Balance (units)</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="btnrow">
+                <button id="btnPoolAllocate" type="button">Auto-allocate Pool</button>
+                <button class="secondary" id="btnPoolClear" type="button">Clear Fleet</button>
+              </div>
+
+              <div class="divider"></div>
+              <div class="svgwrap">
+                <svg id="poolChart" width="980" height="240" viewBox="0 0 980 240" role="img" aria-label="Pooling allocation chart"></svg>
+                <div class="hint" style="margin-top:8px">
+                  Απεικόνιση: ποιο surplus καλύπτει ποιο deficit. (Απλοποιημένο: first-come allocation.)
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB 4: SENSITIVITY -->
+          <section id="tab-sens">
+            <div class="body">
+              <h2 style="margin:0 0 8px; font-size:14px;">Sensitivity — “tornado” (απλοποιημένο)</h2>
+              <p class="hint" style="margin-top:0">
+                Επιλέγει βασικά drivers (RU Tier2, Biofuel price, Reduction%, Slip) και δείχνει πόσο αλλάζει το <b>Total Cost</b>.
+              </p>
+
+              <div class="row">
+                <div class="col">
+                  <label for="sensDelta">Διακύμανση παραμέτρων (±%)</label>
+                  <input id="sensDelta" type="number" step="1" value="20" />
+                </div>
+                <div class="col">
+                  <button id="btnRunSensitivity" type="button">Run Sensitivity</button>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+              <div class="svgwrap">
+                <svg id="sensChart" width="980" height="260" viewBox="0 0 980 260" role="img" aria-label="Sensitivity chart"></svg>
+                <div class="hint" style="margin-top:8px">
+                  Μεγαλύτερη μπάρα = μεγαλύτερη επίδραση στο κόστος.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB 5: AUDIT / EXPORT -->
+          <section id="tab-audit">
+            <div class="body">
+              <h2 style="margin:0 0 8px; font-size:14px;">Audit trail & Export</h2>
+              <p class="hint" style="margin-top:0">
+                Κρατάει “log” των inputs/assumptions και σου επιτρέπει export σε JSON ή “printable” report.
+              </p>
+
+              <div class="btnrow">
+                <button class="secondary" id="btnExportJSON" type="button">Export JSON</button>
+                <button class="secondary" id="btnExportCSVTemplate" type="button">Download CSV template</button>
+                <button class="secondary" id="btnPrint" type="button">Print report</button>
+                <button class="danger" id="btnClearAudit" type="button">Clear audit log</button>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="codebox" id="auditBox">—</div>
+
+              <div class="divider"></div>
+              <div class="footnote">
+                <b>Σημείωση:</b> Αυτό είναι demo single-file. Σε “production” θα έβαζα auth, storage (db), versioned LCA library,
+                role-based access, και export pack για verifier.
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- RIGHT: RESULTS PANEL -->
+      <div class="rightcol">
+        <div class="card">
+          <div class="cardhead">
+            <h2>Αποτελέσματα</h2>
+            <span id="statusBadge" class="badge">—</span>
+          </div>
+          <div class="body">
+            <div class="kpi">
+              <div class="kbox">
+                <div class="k">Attained GFI</div>
+                <div class="v num" id="kAttained">—</div>
+                <div class="s">Σταθμισμένος μέσος όρος εκπομπών</div>
+              </div>
+              <div class="kbox">
+                <div class="k">Target GFI</div>
+                <div class="v num" id="kTarget">—</div>
+                <div class="s">Όριο για το έτος</div>
+              </div>
+              <div class="kbox">
+                <div class="k">Total Energy</div>
+                <div class="v num" id="kEnergy">—</div>
+                <div class="s">MJ (από LHV×tonnes)</div>
+              </div>
+              <div class="kbox">
+                <div class="k">Balance</div>
+                <div class="v num" id="kBalance">—</div>
+                <div class="s">Surplus (+) / Deficit (−)</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="kpi">
+              <div class="kbox">
+                <div class="k">Estimated Fuel Cost</div>
+                <div class="v num" id="kFuelCost">—</div>
+                <div class="s">USD (με βάση Price×Tonnes)</div>
+              </div>
+              <div class="kbox">
+                <div class="k">Estimated RU Cost</div>
+                <div class="v num" id="kRUCost">—</div>
+                <div class="s">USD (απλοποιημένο μοντέλο)</div>
+              </div>
+              <div class="kbox">
+                <div class="k">Surplus Value</div>
+                <div class="v num" id="kSurplusVal">—</div>
+                <div class="s">USD (units×surplus price)</div>
+              </div>
+              <div class="kbox">
+                <div class="k">Total Cost (net)</div>
+                <div class="v num" id="kTotalCost">—</div>
+                <div class="s">Fuel + RU − Surplus</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="svgwrap">
+              <svg id="gfiGauge" width="520" height="210" viewBox="0 0 520 210" role="img" aria-label="GFI gauge"></svg>
+              <div class="hint" style="margin-top:8px">
+                Πράσινο = κάτω από το target. Κόκκινο = πάνω από το target.
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="footnote">
+              <b>Disclaimer:</b> Demo calculator για εκπαιδευτικούς σκοπούς. Δεν είναι επίσημο εργαλείο IMO και απλοποιεί την τιμολόγηση/μονάδες.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast">
+  <b id="toastTitle">—</b>
+  <div class="mutedline" id="toastMsg">—</div>
+</div>
+
+<script>
+  /***********************
+   * 1) SIMPLE DATA MODEL
+   ***********************/
+  const DEFAULT_FUELS = [
+    { id: uid(), name:"Heavy Fuel Oil (HFO)", lhv:40200, gfi:92.78, tonnes:0, price:0, kind:"fossil" },
+    { id: uid(), name:"Marine Gas Oil (MGO)", lhv:43000, gfi:90.63, tonnes:0, price:0, kind:"fossil" },
+    { id: uid(), name:"Liquefied Natural Gas (LNG)", lhv:48000, gfi:77.18, tonnes:0, price:0, kind:"lng" },
+    { id: uid(), name:"Biofuel (generic)", lhv:40648, gfi:35.00, tonnes:0, price:0, kind:"bio" },
+    { id: uid(), name:"e-ammonia", lhv:18600, gfi:4.00, tonnes:0, price:0, kind:"efuel" },
+    { id: uid(), name:"bio-methanol", lhv:19900, gfi:17.00, tonnes:0, price:0, kind:"bio" },
+  ];
+
+  // In a real product, these would be versioned tables sourced from official LCA pathway datasets.
+  const ENGINE_SLIP_PRESETS = {
+    none: null,
+    "2s_df_lp": 2.0,
+    "4s_df": 3.5,
+    hpdi: 0.3,
+    custom: "custom"
+  };
+
+  // App state
+  const state = {
+    fuels: deepCopy(DEFAULT_FUELS),
+    pooling: [],
+    audit: [],
+    lastResult: null,
+  };
+
+  /***********************
+   * 2) DOM HELPERS
+   ***********************/
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+  function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+  function deepCopy(o){ return JSON.parse(JSON.stringify(o)); }
+  function fmt(n, digits=2){
+    if (n === null || n === undefined || Number.isNaN(n)) return "—";
+    const num = Number(n);
+    return num.toLocaleString("en-US", {maximumFractionDigits:digits, minimumFractionDigits:digits});
+  }
+  function fmt0(n){
+    if (n === null || n === undefined || Number.isNaN(n)) return "—";
+    const num = Number(n);
+    return num.toLocaleString("en-US", {maximumFractionDigits:0});
+  }
+  function toast(title, msg){
+    $("#toastTitle").textContent = title;
+    $("#toastMsg").textContent = msg;
+    $("#toast").classList.add("show");
+    setTimeout(()=> $("#toast").classList.remove("show"), 2600);
+  }
+
+  /***********************
+   * 3) TABS
+   ***********************/
+  $$(".tab").forEach(t=>{
+    t.addEventListener("click", ()=>{
+      $$(".tab").forEach(x=>x.classList.remove("active"));
+      t.classList.add("active");
+      const name = t.dataset.tab;
+      $$(".tabpanes > section").forEach(p=>p.classList.remove("active"));
+      $("#tab-"+name).classList.add("active");
+      // redraw charts when needed
+      if(name==="scenario") drawScenarioChart();
+      if(name==="pool") drawPoolChart();
+      if(name==="sens") drawSensChart([]);
+      if(name==="audit") renderAudit();
+    });
+  });
+
+  /***********************
+   * 4) FUEL TABLE RENDER
+   ***********************/
+  function renderFuelTable(){
+    const tbody = $("#fuelTable tbody");
+    tbody.innerHTML = "";
+    state.fuels.forEach((f, idx)=>{
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>
+          <input aria-label="Fuel name" value="${escapeHtml(f.name)}" data-k="name" data-id="${f.id}" />
+          <div class="small">type: <span class="num">${escapeHtml(f.kind)}</span></div>
+        </td>
+        <td class="num"><input aria-label="LHV" type="number" step="1" value="${f.lhv}" data-k="lhv" data-id="${f.id}" /></td>
+        <td class="num"><input aria-label="GFI factor" type="number" step="0.01" value="${f.gfi}" data-k="gfi" data-id="${f.id}" /></td>
+        <td class="num"><input aria-label="Tonnes" type="number" step="0.01" value="${f.tonnes}" data-k="tonnes" data-id="${f.id}" /></td>
+        <td class="num"><input aria-label="Price" type="number" step="0.01" value="${f.price}" data-k="price" data-id="${f.id}" /></td>
+        <td style="text-align:right">
+          <button class="secondary" data-action="remove" data-id="${f.id}" title="Remove">✕</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // bind input changes
+    tbody.querySelectorAll("input").forEach(inp=>{
+      inp.addEventListener("input", ()=>{
+        const id = inp.dataset.id;
+        const k = inp.dataset.k;
+        const f = state.fuels.find(x=>x.id===id);
+        if(!f) return;
+        if(k==="name") f.name = inp.value;
+        else f[k] = Number(inp.value);
+        // keep results fresh if user edits
+        if(state.lastResult) calculateAndRender(false);
+      });
+    });
+
+    // remove buttons
+    tbody.querySelectorAll("button[data-action='remove']").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.dataset.id;
+        state.fuels = state.fuels.filter(x=>x.id!==id);
+        renderFuelTable();
+        if(state.lastResult) calculateAndRender(false);
+        logAudit("fuel.remove", {id});
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  /***********************
+   * 5) CORE CALCULATION
+   ***********************/
+  function getInputs(){
+    const year = Number($("#year").value);
+    const refGFI = Number($("#refGFI").value);
+    const reduction = Number($("#reduction").value)/100;
+    const target = refGFI * (1 - reduction);
+
+    const engineType = $("#engineType").value;
+    let slip = ENGINE_SLIP_PRESETS[engineType];
+    if(slip === "custom") slip = Number($("#slipPct").value);
+    if(slip === null) slip = null; // ignore
+    const slipPct = (slip === null ? null : Number(slip));
+
+    const includeCH4N2O = $("#includeCH4N2O").value;
+
+    const surplusPrice = Number($("#surplusPrice").value);
+    const ruTier1 = Number($("#ruTier1").value);
+    const ruTier2 = Number($("#ruTier2").value);
+
+    return {year, refGFI, reduction, target, engineType, slipPct, includeCH4N2O, surplusPrice, ruTier1, ruTier2};
+  }
+
+  // Demo methane slip adjustment:
+  // Increase LNG GFI factor by + (slipPct * 1.5) gCO2e/MJ (purely illustrative)
+  function adjustedFuelFactor(f, slipPct){
+    let gfi = Number(f.gfi);
+    if(f.kind === "lng" && slipPct !== null){
+      gfi = gfi + (slipPct * 1.5);
+    }
+    return gfi;
+  }
+
+  function calculate(){
+    const inp = getInputs();
+
+    let totalEnergyMJ = 0;
+    let weightedSum = 0;
+    let fuelCost = 0;
+
+    const fuelRows = state.fuels.map(f=>{
+      const tonnes = Number(f.tonnes)||0;
+      const lhv = Number(f.lhv)||0;
+      const energy = tonnes * lhv; // MJ
+      const gfi = adjustedFuelFactor(f, inp.slipPct);
+      const w = energy * gfi; // (MJ)*(gCO2e/MJ) = gCO2e
+      const cost = tonnes * (Number(f.price)||0);
+
+      totalEnergyMJ += energy;
+      weightedSum += w;
+      fuelCost += cost;
+
+      return {...f, adjGfi:gfi, energyMJ:energy, emissions_gCO2e:w, costUSD:cost};
+    });
+
+    const attained = (totalEnergyMJ > 0) ? (weightedSum / totalEnergyMJ) : 0;
+
+    // Compliance balance in "units" (demo):
+    // units = (target - attained) * totalEnergy (scaled)
+    // We scale to keep numbers readable: units = (target - attained) * totalEnergyMJ / 1000
+    const balanceUnits = (inp.target - attained) * totalEnergyMJ / 1000;
+
+    // RU cost (demo):
+    // Convert deficit "units" to tCO2e using an illustrative factor.
+    // Assume 1 unit ~ 1 tCO2e for demo simplicity (NOT official).
+    const deficitUnits = Math.max(0, -balanceUnits);
+    const surplusUnits = Math.max(0, balanceUnits);
+
+    // Split deficit into Tier1/Tier2 (demo): first 70% tier1, rest tier2
+    const t1 = deficitUnits * 0.7;
+    const t2 = deficitUnits * 0.3;
+    const ruCost = t1 * inp.ruTier1 + t2 * inp.ruTier2;
+
+    const surplusValue = surplusUnits * inp.surplusPrice;
+
+    const totalCostNet = fuelCost + ruCost - surplusValue;
+
+    return {
+      inputs: inp,
+      fuels: fuelRows,
+      totalEnergyMJ,
+      attainedGFI: attained,
+      targetGFI: inp.target,
+      balanceUnits,
+      deficitUnits,
+      surplusUnits,
+      fuelCostUSD: fuelCost,
+      ruCostUSD: ruCost,
+      surplusValueUSD: surplusValue,
+      totalCostUSD: totalCostNet
+    };
+  }
+
+  function calculateAndRender(showToast=true){
+    const res = calculate();
+    state.lastResult = res;
+    renderResults(res);
+    drawGauge(res);
+    logAudit("calc.run", {
+      year: res.inputs.year,
+      target: res.targetGFI,
+      attained: res.attainedGFI,
+      balanceUnits: res.balanceUnits,
+      totalCostUSD: res.totalCostUSD
+    });
+    if(showToast){
+      toast("Υπολογισμός ολοκληρώθηκε", `Attained: ${fmt(res.attainedGFI,2)} | Target: ${fmt(res.targetGFI,2)} | Balance: ${fmt(res.balanceUnits,0)} units`);
+    }
+    return res;
+  }
+
+  function renderResults(res){
+    $("#chipYear").textContent = res.inputs.year;
+
+    $("#kAttained").textContent = fmt(res.attainedGFI, 2);
+    $("#kTarget").textContent = fmt(res.targetGFI, 2);
+    $("#kEnergy").textContent = fmt0(res.totalEnergyMJ) + " MJ";
+
+    const bal = res.balanceUnits;
+    $("#kBalance").textContent = (bal>=0?"+":"") + fmt(bal,0) + " units";
+
+    $("#kFuelCost").textContent = "$" + fmt(res.fuelCostUSD,0);
+    $("#kRUCost").textContent = "$" + fmt(res.ruCostUSD,0);
+    $("#kSurplusVal").textContent = "$" + fmt(res.surplusValueUSD,0);
+    $("#kTotalCost").textContent = "$" + fmt(res.totalCostUSD,0);
+
+    const status = (res.attainedGFI <= res.targetGFI) ? "COMPLIANT" : "NON-COMPLIANT";
+    const badge = $("#statusBadge");
+    badge.textContent = status;
+
+    if(status==="COMPLIANT"){
+      badge.style.borderColor = "rgba(50,213,131,.45)";
+      badge.style.background = "rgba(50,213,131,.12)";
+      badge.style.color = "#bff5da";
+    }else{
+      badge.style.borderColor = "rgba(255,107,107,.45)";
+      badge.style.background = "rgba(255,107,107,.12)";
+      badge.style.color = "#ffd2d2";
+    }
+  }
+
+  /***********************
+   * 6) GAUGE SVG
+   ***********************/
+  function drawGauge(res){
+    const svg = $("#gfiGauge");
+    const W=520,H=210;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.innerHTML = "";
+
+    const pad=22;
+    const x0=pad, x1=W-pad;
+    const y=110;
+    const barH=16;
+
+    const target = res.targetGFI;
+    const attained = res.attainedGFI;
+
+    const min = Math.max(0, Math.min(target, attained) - 20);
+    const max = Math.max(target, attained) + 20;
+
+    const scale = (v)=> x0 + ( (v-min)/(max-min) )*(x1-x0);
+
+    const xt = scale(target);
+    const xa = scale(attained);
+
+    // base bar
+    svg.appendChild(rect(x0, y, x1-x0, barH, "rgba(255,255,255,.08)", "rgba(255,255,255,.12)"));
+    // green zone: <= target
+    svg.appendChild(rect(x0, y, Math.max(0, xt-x0), barH, "rgba(50,213,131,.18)", "rgba(50,213,131,.25)"));
+    // red zone: > target
+    svg.appendChild(rect(xt, y, Math.max(0, x1-xt), barH, "rgba(255,107,107,.14)", "rgba(255,107,107,.22)"));
+
+    // target line
+    svg.appendChild(line(xt, y-18, xt, y+barH+18, "rgba(255,209,102,.9)", 2));
+    svg.appendChild(text(`Target ${fmt(target,2)}`, xt, y-24, "middle", "rgba(255,209,102,.95)", 12, true));
+
+    // attained marker
+    svg.appendChild(circle(xa, y+barH/2, 8, (attained<=target)?"rgba(50,213,131,.95)":"rgba(255,107,107,.95)"));
+    svg.appendChild(text(`Attained ${fmt(attained,2)}`, xa, y+barH+34, "middle", "rgba(234,240,255,.95)", 12, true));
+
+    // axis labels
+    svg.appendChild(text(fmt(min,1), x0, y+barH+58, "start", "rgba(168,179,214,.9)", 11, false));
+    svg.appendChild(text(fmt(max,1), x1, y+barH+58, "end", "rgba(168,179,214,.9)", 11, false));
+
+    // title
+    svg.appendChild(text("GFI Gauge (demo scale)", W/2, 26, "middle", "rgba(234,240,255,.95)", 13, true));
+  }
+
+  function rect(x,y,w,h,fill,stroke){
+    const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
+    r.setAttribute("x",x); r.setAttribute("y",y);
+    r.setAttribute("width",w); r.setAttribute("height",h);
+    r.setAttribute("rx","10"); r.setAttribute("ry","10");
+    r.setAttribute("fill",fill);
+    r.setAttribute("stroke",stroke);
+    return r;
+  }
+  function line(x1,y1,x2,y2,stroke,width){
+    const l=document.createElementNS("http://www.w3.org/2000/svg","line");
+    l.setAttribute("x1",x1); l.setAttribute("y1",y1);
+    l.setAttribute("x2",x2); l.setAttribute("y2",y2);
+    l.setAttribute("stroke",stroke);
+    l.setAttribute("stroke-width",width);
+    return l;
+  }
+  function circle(cx,cy,radius,fill){
+    const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx",cx); c.setAttribute("cy",cy); c.setAttribute("r",radius);
+    c.setAttribute("fill",fill);
+    return c;
+  }
+  function text(str,x,y,anchor,fill,size,bold){
+    const t=document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.textContent=str;
+    t.setAttribute("x",x); t.setAttribute("y",y);
+    t.setAttribute("text-anchor",anchor);
+    t.setAttribute("fill",fill);
+    t.setAttribute("font-size",size);
+    t.setAttribute("font-family","ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial");
+    if(bold) t.setAttribute("font-weight","800");
+    return t;
+  }
+
+  /***********************
+   * 7) OPTIMIZATION (DEMO)
+   ***********************/
+  function optimizeDemo(){
+    // Strategy (demo):
+    // Find a candidate "low-carbon" fuel (min gfi) and a "high-carbon" fuel (max gfi with tonnes>0)
+    // Replace some fraction of high-carbon energy with low-carbon energy to meet target.
+    const base = calculate();
+    if(base.totalEnergyMJ <= 0){
+      toast("Δεν υπάρχει κατανάλωση", "Βάλε tonnes σε τουλάχιστον ένα καύσιμο.");
+      return;
+    }
+
+    const inp = getInputs();
+    const fuels = state.fuels.map(f=>({...f, adjGfi: adjustedFuelFactor(f, inp.slipPct)}));
+
+    const low = fuels.slice().sort((a,b)=>a.adjGfi-b.adjGfi)[0];
+    const highCandidates = fuels.filter(f => (Number(f.tonnes)||0) > 0).sort((a,b)=>b.adjGfi-a.adjGfi);
+    const high = highCandidates[0];
+
+    if(!low || !high || low.id === high.id){
+      toast("Optimization δεν είναι δυνατό", "Χρειάζεσαι τουλάχιστον 2 καύσιμα (και κατανάλωση στο πιο “βρώμικο”).");
+      return;
+    }
+
+    // If already compliant, offer cost improvement: try reduce expensive fuel by shifting to cheaper among same gfi? (skip)
+    if(base.attainedGFI <= base.targetGFI){
+      toast("Ήδη compliant", "Το demo optimization είναι κυρίως για να πιάσεις τον στόχο όταν έχεις deficit.");
+      return;
+    }
+
+    // Solve required energy shift x (MJ) such that:
+    // new_attained = (sum - x*highGFI + x*lowGFI) / totalEnergy <= target
+    const sum = base.attainedGFI * base.totalEnergyMJ;
+    const requiredX = (sum - inp.target * base.totalEnergyMJ) / (high.adjGfi - low.adjGfi);
+
+    const maxShift = (Number(high.tonnes)||0) * (Number(high.lhv)||0); // all high fuel energy
+    const x = Math.min(Math.max(requiredX, 0), maxShift);
+
+    // Apply shift by reducing high tonnes and increasing low tonnes by energy-equivalent tonnes
+    const highTonnesDelta = x / high.lhv;
+    const lowTonnesDelta  = x / low.lhv;
+
+    // Update state
+    const hf = state.fuels.find(f=>f.id===high.id);
+    const lf = state.fuels.find(f=>f.id===low.id);
+    hf.tonnes = Math.max(0, Number(hf.tonnes) - highTonnesDelta);
+    lf.tonnes = Number(lf.tonnes) + lowTonnesDelta;
+
+    renderFuelTable();
+    const res = calculateAndRender(true);
+
+    logAudit("optimize.demo", {
+      shiftedEnergyMJ: x,
+      from: high.name, to: low.name,
+      highTonnesDelta, lowTonnesDelta,
+      newAttained: res.attainedGFI
+    });
+
+    toast("Optimization (demo) εφαρμόστηκε",
+      `Shift ${fmt0(x)} MJ από "${high.name}" → "${low.name}". Νέο Attained: ${fmt(res.attainedGFI,2)}`
+    );
+  }
+
+  /***********************
+   * 8) SCENARIOS
+   ***********************/
+  function bindScenarioSliders(){
+    const upd = ()=>{
+      $("#scBioPremiumVal").textContent = $("#scBioPremium").value;
+      $("#scRUVal").textContent = Number($("#scRU").value).toFixed(2);
+      $("#scSlipVal").textContent = $("#scSlip").value;
+    };
+    ["#scBioPremium","#scRU","#scSlip"].forEach(id=>{
+      $(id).addEventListener("input", upd);
+    });
+    upd();
+  }
+
+  function applyScenario(){
+    // Apply to prices (bio kinds), RU multiplier, slip override.
+    const prem = Number($("#scBioPremium").value);
+    const ruMult = Number($("#scRU").value);
+    const slip = Number($("#scSlip").value);
+
+    // Set slip directly
+    $("#engineType").value = "custom";
+    $("#slipPct").value = slip;
+
+    // Increase biofuel prices by premium (only for kind bio)
+    state.fuels.forEach(f=>{
+      if(f.kind === "bio"){
+        f.price = (Number(f.price)||0) + prem;
+      }
+    });
+
+    // Multiply RU prices
+    $("#ruTier1").value = Number($("#ruTier1").value) * ruMult;
+    $("#ruTier2").value = Number($("#ruTier2").value) * ruMult;
+
+    renderFuelTable();
+    const res = calculateAndRender(true);
+    drawScenarioChart(res);
+  }
+
+  function resetScenario(){
+    // Reset to baseline default
+    $("#scBioPremium").value = 200;
+    $("#scRU").value = 1.0;
+    $("#scSlip").value = 2.0;
+    bindScenarioSliders();
+
+    // Reset fuels (keep tonnes, reset prices to 0 for demo)
+    state.fuels.forEach(f=>{ f.price = 0; });
+
+    // Reset RU prices & slip preset
+    $("#ruTier1").value = 145;
+    $("#ruTier2").value = 380;
+    $("#engineType").value = "none";
+    $("#slipPct").value = 2.0;
+
+    renderFuelTable();
+    calculateAndRender(false);
+    drawScenarioChart();
+    toast("Scenario reset", "Επαναφορά βασικών τιμών.");
+    logAudit("scenario.reset", {});
+  }
+
+  function drawScenarioChart(res = state.lastResult){
+    const svg = $("#scenarioChart");
+    const W=980,H=220;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.innerHTML = "";
+
+    const base = res || state.lastResult;
+    if(!base){
+      svg.appendChild(text("Κάνε έναν υπολογισμό πρώτα.", W/2, H/2, "middle", "rgba(168,179,214,.9)", 14, true));
+      return;
+    }
+
+    const pad=40;
+    const x0=pad, x1=W-pad;
+    const y0=40, y1=H-34;
+
+    const t = base.targetGFI;
+    const a = base.attainedGFI;
+
+    const min = Math.max(0, Math.min(t,a) - 15);
+    const max = Math.max(t,a) + 15;
+    const sx = (v)=> x0 + ((v-min)/(max-min))*(x1-x0);
+
+    // axis
+    svg.appendChild(line(x0,y1,x1,y1,"rgba(255,255,255,.16)",1));
+    svg.appendChild(text(fmt(min,1), x0, y1+22, "start","rgba(168,179,214,.9)",11,false));
+    svg.appendChild(text(fmt(max,1), x1, y1+22, "end","rgba(168,179,214,.9)",11,false));
+
+    // bars: show target & attained as vertical markers
+    const xt=sx(t), xa=sx(a);
+    svg.appendChild(line(xt,y0,xt,y1,"rgba(255,209,102,.9)",3));
+    svg.appendChild(line(xa,y0,xa,y1,(a<=t)?"rgba(50,213,131,.9)":"rgba(255,107,107,.9)",3));
+
+    svg.appendChild(text(`Target: ${fmt(t,2)}`, xt, 26, "middle","rgba(255,209,102,.95)",12,true));
+    svg.appendChild(text(`Attained: ${fmt(a,2)}`, xa, 26, "middle","rgba(234,240,255,.95)",12,true));
+
+    // cost box
+    const boxX=60, boxY=62, boxW=380, boxH=92;
+    svg.appendChild(rect(boxX,boxY,boxW,boxH,"rgba(255,255,255,.03)","rgba(255,255,255,.12)"));
+    svg.appendChild(text("Κόστος (demo):", boxX+14, boxY+24, "start","rgba(234,240,255,.95)",12,true));
+    svg.appendChild(text(`Fuel: $${fmt(base.fuelCostUSD,0)}`, boxX+14, boxY+48, "start","rgba(168,179,214,.95)",12,false));
+    svg.appendChild(text(`RU:   $${fmt(base.ruCostUSD,0)}`, boxX+14, boxY+68, "start","rgba(168,179,214,.95)",12,false));
+    svg.appendChild(text(`Net:  $${fmt(base.totalCostUSD,0)}`, boxX+14, boxY+88, "start","rgba(234,240,255,.95)",12,true));
+
+    svg.appendChild(text("Attained vs Target (GFI)", W/2, H-6, "middle","rgba(168,179,214,.9)",12,false));
+  }
+
+  /***********************
+   * 9) POOLING
+   ***********************/
+  function renderPoolTable(){
+    const tbody = $("#poolTable tbody");
+    tbody.innerHTML = "";
+    state.pooling.forEach(v=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(v.name)}</td>
+        <td class="num">${(v.balance>=0?"+":"") + fmt(v.balance,0)}</td>
+        <td style="text-align:right"><button class="secondary" data-id="${v.id}">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll("button").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.dataset.id;
+        state.pooling = state.pooling.filter(x=>x.id!==id);
+        renderPoolTable();
+        drawPoolChart();
+        logAudit("pool.remove", {id});
+      });
+    });
+  }
+
+  function poolAllocate(){
+    // Simple greedy allocation: use surplus vessels to cover deficit vessels.
+    const surpluses = state.pooling.filter(v=>v.balance>0).map(v=>({...v}));
+    const deficits  = state.pooling.filter(v=>v.balance<0).map(v=>({...v}));
+
+    const allocations = []; // {from,to,units}
+
+    let i=0;
+    for(const d of deficits){
+      let need = -d.balance;
+      while(need > 0 && i < surpluses.length){
+        const s = surpluses[i];
+        const take = Math.min(need, s.balance);
+        if(take>0){
+          allocations.push({from:s.name, to:d.name, units:take});
+          s.balance -= take;
+          need -= take;
+        }
+        if(s.balance<=0) i++;
+      }
+      d.remaining = need;
+    }
+
+    drawPoolChart(allocations, deficits, surpluses);
+    logAudit("pool.allocate", {allocations});
+    toast("Pooling allocation", `Allocations: ${allocations.length} transfers.`);
+  }
+
+  function drawPoolChart(allocations=[], deficits=null, surpluses=null){
+    const svg = $("#poolChart");
+    const W=980,H=240;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.innerHTML = "";
+
+    if(state.pooling.length===0){
+      svg.appendChild(text("Πρόσθεσε πλοία για να δεις pooling allocation.", W/2, H/2, "middle", "rgba(168,179,214,.9)", 14, true));
+      return;
+    }
+
+    const leftX=120, rightX=W-120;
+    const top=40, bottom=H-30;
+    const leftList = state.pooling.filter(v=>v.balance>0);
+    const rightList = state.pooling.filter(v=>v.balance<0);
+
+    // nodes
+    const lyStep = leftList.length ? (bottom-top)/leftList.length : 40;
+    const ryStep = rightList.length ? (bottom-top)/rightList.length : 40;
+
+    const L = leftList.map((v,idx)=>({v, x:leftX, y: top + lyStep*(idx+0.5)}));
+    const R = rightList.map((v,idx)=>({v, x:rightX, y: top + ryStep*(idx+0.5)}));
+
+    svg.appendChild(text("Surplus", leftX, 22, "middle","rgba(50,213,131,.95)",12,true));
+    svg.appendChild(text("Deficit", rightX, 22, "middle","rgba(255,107,107,.95)",12,true));
+
+    L.forEach(n=>{
+      svg.appendChild(circle(n.x, n.y, 10, "rgba(50,213,131,.9)"));
+      svg.appendChild(text(`${n.v.name} (+${fmt(n.v.balance,0)})`, n.x+16, n.y+4, "start","rgba(234,240,255,.95)",12,false));
+    });
+    R.forEach(n=>{
+      svg.appendChild(circle(n.x, n.y, 10, "rgba(255,107,107,.9)"));
+      svg.appendChild(text(`${n.v.name} (${fmt(n.v.balance,0)})`, n.x-16, n.y+4, "end","rgba(234,240,255,.95)",12,false));
+    });
+
+    if(!allocations || allocations.length===0){
+      svg.appendChild(text("Πάτα “Auto-allocate Pool” για γραμμές μεταφοράς.", W/2, H-8, "middle","rgba(168,179,214,.9)",12,false));
+      return;
+    }
+
+    // helper maps
+    const mapL = new Map(L.map(n=>[n.v.name, n]));
+    const mapR = new Map(R.map(n=>[n.v.name, n]));
+
+    allocations.forEach(a=>{
+      const from = mapL.get(a.from);
+      const to = mapR.get(a.to);
+      if(!from || !to) return;
+      const p = document.createElementNS("http://www.w3.org/2000/svg","path");
+      const midX = (from.x + to.x)/2;
+      const d = `M ${from.x} ${from.y} C ${midX} ${from.y}, ${midX} ${to.y}, ${to.x} ${to.y}`;
+      p.setAttribute("d", d);
+      p.setAttribute("fill","none");
+      p.setAttribute("stroke","rgba(110,168,254,.55)");
+      p.setAttribute("stroke-width", Math.max(1.5, Math.min(8, a.units/400)));
+      svg.appendChild(p);
+    });
+
+    svg.appendChild(text("Lines show surplus → deficit transfers (width ~ units).", W/2, H-8, "middle","rgba(168,179,214,.9)",12,false));
+  }
+
+  /***********************
+   * 10) SENSITIVITY (DEMO)
+   ***********************/
+  function runSensitivity(){
+    const base = state.lastResult || calculateAndRender(false);
+    const deltaPct = Number($("#sensDelta").value)/100;
+
+    // We perturb a few drivers:
+    // - ruTier2
+    // - reduction %
+    // - slip %
+    // - biofuel price (first bio kind)
+    const drivers = [
+      { key:"ruTier2", label:"RU Tier2 price", get:()=>Number($("#ruTier2").value), set:(v)=>$("#ruTier2").value=v },
+      { key:"reduction", label:"Reduction %", get:()=>Number($("#reduction").value), set:(v)=>$("#reduction").value=v },
+      { key:"slipPct", label:"Methane slip %", get:()=>Number($("#slipPct").value), set:(v)=>$("#slipPct").value=v },
+      { key:"bioPrice", label:"Biofuel price", get:()=>getFirstBioPrice(), set:(v)=>setFirstBioPrice(v) },
+    ];
+
+    const baseCost = base.totalCostUSD;
+    const results = [];
+
+    for(const d of drivers){
+      const original = d.get();
+      const up = original * (1 + deltaPct);
+      const down = Math.max(0, original * (1 - deltaPct));
+
+      d.set(up);
+      const upCost = calculate().totalCostUSD;
+
+      d.set(down);
+      const downCost = calculate().totalCostUSD;
+
+      d.set(original); // restore
+
+      const impact = Math.max(Math.abs(upCost-baseCost), Math.abs(downCost-baseCost));
+      results.push({label:d.label, impact, upCost, downCost});
+    }
+
+    results.sort((a,b)=>b.impact-a.impact);
+    drawSensChart(results, baseCost);
+    logAudit("sensitivity.run", {deltaPct: deltaPct*100, results});
+    toast("Sensitivity ολοκληρώθηκε", "Δες το tornado chart.");
+  }
+
+  function getFirstBioPrice(){
+    const b = state.fuels.find(f=>f.kind==="bio");
+    return b ? Number(b.price)||0 : 0;
+  }
+  function setFirstBioPrice(v){
+    const b = state.fuels.find(f=>f.kind==="bio");
+    if(b) b.price = Number(v)||0;
+    renderFuelTable();
+  }
+
+  function drawSensChart(results=[], baseCost=null){
+    const svg = $("#sensChart");
+    const W=980,H=260;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.innerHTML = "";
+
+    if(!results || results.length===0){
+      svg.appendChild(text("Πάτα “Run Sensitivity” για να δημιουργηθεί tornado chart.", W/2, H/2, "middle", "rgba(168,179,214,.9)", 14, true));
+      return;
+    }
+
+    const padL=220, padR=40, top=34, rowH=44;
+    const maxImpact = Math.max(...results.map(r=>r.impact), 1);
+    const scale = (x)=> (x/maxImpact) * (W - padL - padR);
+
+    svg.appendChild(text(`Base cost: $${fmt(baseCost,0)} | Impacts are |Δcost| for ±${$("#sensDelta").value}%`, W/2, 18, "middle", "rgba(168,179,214,.95)", 12, false));
+
+    results.forEach((r, i)=>{
+      const y = top + i*rowH;
+      const barW = scale(r.impact);
+      const x0 = padL;
+
+      // label
+      svg.appendChild(text(r.label, padL-12, y+20, "end", "rgba(234,240,255,.95)", 12, true));
+      // bar
+      svg.appendChild(rect(x0, y+6, barW, 18, "rgba(110,168,254,.22)", "rgba(110,168,254,.35)"));
+      // value
+      svg.appendChild(text(`±$${fmt(r.impact,0)}`, x0+barW+10, y+20, "start", "rgba(168,179,214,.95)", 12, false));
+    });
+  }
+
+  /***********************
+   * 11) CSV IMPORT / TEMPLATE
+   ***********************/
+  function downloadCSVTemplate(){
+    const csv = [
+      "fuel,lhv_mj_per_t,gfi_gco2e_per_mj,tonnes,price_usd_per_mt,kind",
+      "Heavy Fuel Oil (HFO),40200,92.78,1000,600,fossil",
+      "Marine Gas Oil (MGO),43000,90.63,150,850,fossil",
+      "Liquefied Natural Gas (LNG),48000,77.18,0,0,lng",
+      "Biofuel (generic),40648,35.00,0,1200,bio",
+      "e-ammonia,18600,4.00,0,0,efuel"
+    ].join("\n");
+
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gfi_template.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    logAudit("csv.template.download", {});
+  }
+
+  function importCSV(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const text = reader.result;
+        const rows = parseCSV(text);
+        if(rows.length < 2) throw new Error("Empty CSV");
+        const header = rows[0].map(h=>h.trim().toLowerCase());
+        const idx = (k)=> header.indexOf(k);
+
+        const out = [];
+        for(let i=1;i<rows.length;i++){
+          const r = rows[i];
+          if(r.length===1 && !r[0]) continue;
+          const name = r[idx("fuel")] ?? r[0];
+          if(!name) continue;
+          out.push({
+            id: uid(),
+            name: String(name),
+            lhv: Number(r[idx("lhv_mj_per_t")] ?? r[1]) || 0,
+            gfi: Number(r[idx("gfi_gco2e_per_mj")] ?? r[2]) || 0,
+            tonnes: Number(r[idx("tonnes")] ?? r[3]) || 0,
+            price: Number(r[idx("price_usd_per_mt")] ?? r[4]) || 0,
+            kind: String(r[idx("kind")] ?? r[5] ?? "custom").trim() || "custom",
+          });
+        }
+
+        state.fuels = out;
+        renderFuelTable();
+        calculateAndRender(false);
+        toast("CSV imported", `Φορτώθηκαν ${out.length} καύσιμα.`);
+        logAudit("csv.import", {count: out.length});
+      }catch(e){
+        console.error(e);
+        toast("Σφάλμα CSV", "Δεν μπόρεσα να διαβάσω το αρχείο. Χρησιμοποίησε το template.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Minimal CSV parser (handles commas + quotes)
+  function parseCSV(text){
+    const rows = [];
+    let row = [], cell = "", inQuotes=false;
+
+    for(let i=0;i<text.length;i++){
+      const ch = text[i];
+      const next = text[i+1];
+
+      if(ch === '"' ){
+        if(inQuotes && next === '"'){ cell += '"'; i++; }
+        else inQuotes = !inQuotes;
+      } else if(ch === ',' && !inQuotes){
+        row.push(cell); cell="";
+      } else if((ch === '\n' || ch === '\r') && !inQuotes){
+        if(ch === '\r' && next === '\n') i++;
+        row.push(cell);
+        rows.push(row);
+        row=[]; cell="";
+      } else {
+        cell += ch;
+      }
+    }
+    row.push(cell);
+    rows.push(row);
+    return rows.map(r=>r.map(c=>c.trim()));
+  }
+
+  /***********************
+   * 12) AUDIT / EXPORT
+   ***********************/
+  function logAudit(event, payload){
+    const stamp = new Date().toISOString();
+    state.audit.unshift({stamp, event, payload});
+    // keep last 120
+    state.audit = state.audit.slice(0, 120);
+  }
+
+  function renderAudit(){
+    const box = $("#auditBox");
+    if(state.audit.length === 0){
+      box.textContent = "—";
+      return;
+    }
+    box.textContent = state.audit.map(a =>
+      `[${a.stamp}] ${a.event}\n${JSON.stringify(a.payload, null, 2)}\n`
+    ).join("\n");
+  }
+
+  function exportJSON(){
+    const data = {
+      exportedAt: new Date().toISOString(),
+      inputs: getInputs(),
+      fuels: state.fuels,
+      lastResult: state.lastResult,
+      pooling: state.pooling,
+      audit: state.audit
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gfi_audit_export.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    logAudit("export.json", {bytes: blob.size});
+    toast("Export JSON", "Κατέβηκε το αρχείο audit export.");
+  }
+
+  function printReport(){
+    const res = state.lastResult || calculate();
+    const w = window.open("", "_blank");
+    const html = `
+      <html><head><title>GFI Report</title>
+      <style>
+        body{font-family:Arial, sans-serif; padding:20px;}
+        h1{font-size:18px}
+        table{border-collapse:collapse; width:100%; margin-top:10px}
+        th,td{border:1px solid #ddd; padding:8px; font-size:12px}
+        th{background:#f6f6f6; text-align:left}
+        .k{display:flex; gap:18px; flex-wrap:wrap}
+        .b{border:1px solid #ddd; padding:10px; border-radius:10px; min-width:220px}
+        .v{font-size:16px; font-weight:800}
+      </style></head><body>
+        <h1>IMO Net-Zero (GFI) Compliance — Report (demo)</h1>
+        <div class="k">
+          <div class="b"><div>Year</div><div class="v">${res.inputs.year}</div></div>
+          <div class="b"><div>Attained GFI</div><div class="v">${fmt(res.attainedGFI,2)}</div></div>
+          <div class="b"><div>Target GFI</div><div class="v">${fmt(res.targetGFI,2)}</div></div>
+          <div class="b"><div>Balance units</div><div class="v">${fmt(res.balanceUnits,0)}</div></div>
+        </div>
+        <h2 style="font-size:14px; margin-top:20px">Fuel breakdown</h2>
+        <table>
+          <thead><tr>
+            <th>Fuel</th><th>LHV</th><th>GFI factor</th><th>Tonnes</th><th>Energy (MJ)</th><th>Cost (USD)</th>
+          </tr></thead>
+          <tbody>
+            ${res.fuels.map(f=>`
+              <tr>
+                <td>${escapeHtml(f.name)}</td>
+                <td>${fmt0(f.lhv)}</td>
+                <td>${fmt(f.adjGfi,2)}</td>
+                <td>${fmt(f.tonnes,2)}</td>
+                <td>${fmt0(f.energyMJ)}</td>
+                <td>$${fmt(f.costUSD,0)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+        <h2 style="font-size:14px; margin-top:20px">Costs</h2>
+        <table>
+          <tr><th>Fuel cost</th><td>$${fmt(res.fuelCostUSD,0)}</td></tr>
+          <tr><th>RU cost (demo)</th><td>$${fmt(res.ruCostUSD,0)}</td></tr>
+          <tr><th>Surplus value (demo)</th><td>$${fmt(res.surplusValueUSD,0)}</td></tr>
+          <tr><th>Total net</th><td><b>$${fmt(res.totalCostUSD,0)}</b></td></tr>
+        </table>
+        <p style="margin-top:16px; font-size:11px; color:#666">
+          Disclaimer: Demo tool, simplified pricing/units. Not an official IMO calculator.
+        </p>
+      </body></html>
+    `;
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    w.print();
+    logAudit("report.print", {});
+  }
+
+  /***********************
+   * 13) UI ACTIONS
+   ***********************/
+  $("#btnCalculate").addEventListener("click", ()=> calculateAndRender(true));
+  $("#btnOptimize").addEventListener("click", ()=> optimizeDemo());
+  $("#btnClear").addEventListener("click", ()=>{
+    state.fuels = deepCopy(DEFAULT_FUELS);
+    state.lastResult = null;
+    renderFuelTable();
+    renderResults({attainedGFI:NaN,targetGFI:NaN,totalEnergyMJ:NaN,balanceUnits:NaN,fuelCostUSD:NaN,ruCostUSD:NaN,surplusValueUSD:NaN,totalCostUSD:NaN});
+    $("#gfiGauge").innerHTML = "";
+    $("#statusBadge").textContent = "—";
+    toast("Reset", "Επαναφορά δεδομένων.");
+    logAudit("app.reset", {});
+  });
+
+  $("#btnAddFuel").addEventListener("click", ()=>{
+    state.fuels.push({ id: uid(), name:"Custom fuel", lhv:40000, gfi:60, tonnes:0, price:0, kind:"custom" });
+    renderFuelTable();
+    logAudit("fuel.add", {});
+  });
+
+  $("#btnLoadSample").addEventListener("click", ()=>{
+    state.fuels = deepCopy(DEFAULT_FUELS);
+    // sample tonnes
+    state.fuels.find(f=>f.name.includes("HFO")).tonnes = 1000;
+    state.fuels.find(f=>f.name.includes("MGO")).tonnes = 150;
+    state.fuels.find(f=>f.name.includes("Biofuel")).tonnes = 120;
+    // sample prices
+    state.fuels.forEach(f=>{
+      if(f.kind==="fossil") f.price = 650;
+      if(f.kind==="bio") f.price = 1200;
+      if(f.kind==="lng") f.price = 0;
+      if(f.kind==="efuel") f.price = 0;
+    });
+    renderFuelTable();
+    calculateAndRender(true);
+    logAudit("sample.load", {});
+  });
+
+  // Year change quick preset for reduction (demo)
+  $("#year").addEventListener("change", ()=>{
+    const y = Number($("#year").value);
+    // A simple illustrative curve (not official)
+    const presets = {2028:5, 2029:6, 2030:8, 2031:10, 2032:12, 2035:20, 2040:35, 2050:80};
+    $("#reduction").value = (presets[y] ?? 5);
+    $("#chipYear").textContent = y;
+    if(state.lastResult) calculateAndRender(false);
+    logAudit("year.change", {year:y});
+  });
+
+  // Engine preset to slip
+  $("#engineType").addEventListener("change", ()=>{
+    const t = $("#engineType").value;
+    const preset = ENGINE_SLIP_PRESETS[t];
+    if(preset === null){
+      // ignore
+    } else if(preset === "custom"){
+      // keep user value
+    } else {
+      $("#slipPct").value = preset;
+    }
+    if(state.lastResult) calculateAndRender(false);
+    logAudit("engine.change", {engineType:t, slipPct: $("#slipPct").value});
+  });
+
+  // CSV import
+  $("#btnImportCSV").addEventListener("click", ()=> $("#fileCSV").click());
+  $("#fileCSV").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(file) importCSV(file);
+    e.target.value = "";
+  });
+
+  // Scenario binds
+  bindScenarioSliders();
+  $("#btnScenarioApply").addEventListener("click", ()=> applyScenario());
+  $("#btnScenarioReset").addEventListener("click", ()=> resetScenario());
+
+  // Pooling
+  $("#btnAddVessel").addEventListener("click", ()=>{
+    const name = $("#vesselName").value.trim();
+    const bal = Number($("#vesselBal").value);
+    if(!name || Number.isNaN(bal)){
+      toast("Λείπουν στοιχεία", "Βάλε όνομα και balance (units).");
+      return;
+    }
+    state.pooling.push({id:uid(), name, balance:bal});
+    $("#vesselName").value=""; $("#vesselBal").value="";
+    renderPoolTable();
+    drawPoolChart();
+    logAudit("pool.add", {name, balance:bal});
+  });
+  $("#btnPoolAllocate").addEventListener("click", ()=> poolAllocate());
+  $("#btnPoolClear").addEventListener("click", ()=>{
+    state.pooling = [];
+    renderPoolTable();
+    drawPoolChart();
+    logAudit("pool.clear", {});
+  });
+
+  // Sensitivity
+  $("#btnRunSensitivity").addEventListener("click", ()=> runSensitivity());
+
+  // Audit export
+  $("#btnExportJSON").addEventListener("click", ()=> exportJSON());
+  $("#btnExportCSVTemplate").addEventListener("click", ()=> downloadCSVTemplate());
+  $("#btnPrint").addEventListener("click", ()=> printReport());
+  $("#btnClearAudit").addEventListener("click", ()=>{
+    state.audit = [];
+    renderAudit();
+    toast("Audit cleared", "Διαγράφηκε το audit log.");
+  });
+
+  /***********************
+   * 14) INIT
+   ***********************/
+  function init(){
+    renderFuelTable();
+    drawGauge({attainedGFI:NaN,targetGFI:NaN,totalEnergyMJ:NaN,balanceUnits:NaN,fuelCostUSD:NaN,ruCostUSD:NaN,surplusValueUSD:NaN,totalCostUSD:NaN});
+    renderPoolTable();
+    drawPoolChart();
+    drawScenarioChart(null);
+    renderAudit();
+    logAudit("app.init", {version:"demo-1.0"});
+  }
+  init();
+</script>
+</body>
+</html>

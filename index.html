@@ -3,35 +3,41 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MaritimeCII — Professional CII Calculator</title>
+  <title>IMO Net-Zero — GFI Compliance Calculator</title>
+  <meta name="description" content="IMO Net-Zero GFI compliance calculator: attained GFI, target GFI, deficit/surplus, RU cost, and fuel-mix optimization-ready layout." />
 
   <style>
     :root{
       --bg0:#07111f;
       --bg1:#0a1630;
+
       --panel:#0f1f3e;
       --panel2:#0c1a35;
+
       --stroke:rgba(255,255,255,.10);
       --stroke2:rgba(255,255,255,.14);
+
       --text:#e9f1ff;
       --muted:#a9b7da;
 
       --primary:#4ea1ff;
       --primary2:#2f7df6;
+
       --good:#2fd184;
       --warn:#ffd166;
       --bad:#ff5b6e;
 
       --shadow: 0 18px 40px rgba(0,0,0,.35);
-      --r18: 18px;
-      --r14: 14px;
+      --r18:18px;
+      --r14:14px;
 
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
     body{
       margin:0;
       font-family:var(--sans);
@@ -44,10 +50,9 @@
 
     a{color:var(--primary); text-decoration:none}
     a:hover{text-decoration:underline}
-
     .wrap{max-width:1200px; margin:0 auto; padding:0 14px}
 
-    /* Top nav */
+    /* Top bar */
     .topbar{
       position:sticky; top:0; z-index:20;
       background: linear-gradient(180deg, rgba(7,17,31,.92), rgba(7,17,31,.55));
@@ -57,42 +62,39 @@
     .topbar-inner{
       display:flex; align-items:center; justify-content:space-between;
       gap:12px; padding:14px 0;
+      flex-wrap:wrap;
     }
     .brand{display:flex; align-items:center; gap:12px}
     .mark{
       width:40px; height:40px; border-radius:12px;
       background: linear-gradient(135deg, rgba(78,161,255,.95), rgba(47,209,132,.90));
       display:grid; place-items:center;
-      color:#061126; font-weight:900; letter-spacing:.4px;
+      color:#061126; font-weight:1000; letter-spacing:.3px;
       box-shadow: 0 14px 30px rgba(78,161,255,.16);
       user-select:none;
     }
     .brand h1{margin:0; font-size:14px; letter-spacing:.3px}
     .brand p{margin:2px 0 0; color:var(--muted); font-size:12px}
 
-    .nav{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-    }
-    .nav button{
+    .chiprow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .chip{
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.03);
-      color:var(--muted);
-      padding:9px 12px;
+      color: var(--muted);
+      padding:8px 10px;
       border-radius:999px;
-      font-size:13px;
-      cursor:pointer;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      user-select:none;
+      font-size:12px;
+      display:flex; gap:8px; align-items:center;
+      white-space:nowrap;
     }
-    .nav button:hover{transform: translateY(-1px); border-color:rgba(78,161,255,.35)}
-    .nav button.active{
-      background: rgba(78,161,255,.18);
-      border-color: rgba(78,161,255,.50);
-      color: var(--text);
-    }
+    .chip b{color:var(--text); font-weight:900}
 
-    /* Page layout */
-    main{padding:18px 0 40px}
+    main{padding:18px 0 44px}
+    .page-title{padding:6px 2px 16px}
+    .page-title h2{margin:0 0 4px; font-size:28px; letter-spacing:.2px}
+    .page-title p{margin:0; color:var(--muted); font-size:13px; line-height:1.35}
+
+    /* Layout */
     .grid{
       display:grid;
       grid-template-columns: 1.25fr .75fr;
@@ -112,61 +114,43 @@
     .cardhead{
       padding:14px 14px 12px;
       border-bottom:1px solid var(--stroke);
-      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      display:flex; justify-content:space-between; align-items:center;
+      gap:10px; flex-wrap:wrap;
     }
-    .cardhead h2{
+    .cardhead h3{
       margin:0; font-size:14px; letter-spacing:.2px;
       display:flex; align-items:center; gap:10px;
     }
-    .subtitle{
-      margin:0;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.35;
-    }
     .body{padding:14px}
-
-    .pill{
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-      color: var(--muted);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      display:flex; align-items:center; gap:8px;
-      white-space:nowrap;
-    }
-    .pill b{color:var(--text); font-weight:800}
-    .pill.good{border-color:rgba(47,209,132,.35); background: rgba(47,209,132,.10); color:#c9f7df}
-    .pill.warn{border-color:rgba(255,209,102,.35); background: rgba(255,209,102,.10); color:#ffe9bc}
-    .pill.bad{border-color:rgba(255,91,110,.35); background: rgba(255,91,110,.10); color:#ffd0d7}
+    .divider{height:1px; background: rgba(255,255,255,.08); margin:12px 0}
 
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end}
     .col{flex:1 1 220px; min-width:220px}
     label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
-    input, select, textarea{
+    input, select{
       width:100%;
       padding:10px 11px;
-      border-radius: 12px;
+      border-radius:12px;
       border:1px solid var(--stroke);
       background: rgba(7,17,31,.35);
-      color: var(--text);
+      color:var(--text);
       outline:none;
     }
-    input:focus, select:focus, textarea:focus{
+    input:focus, select:focus{
       border-color: rgba(78,161,255,.65);
       box-shadow: 0 0 0 4px rgba(78,161,255,.15);
     }
     .hint{color:var(--muted); font-size:12px; line-height:1.35; margin-top:8px}
 
+    /* Buttons */
     .btnrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
     button.primary{
       border:none;
       background: linear-gradient(180deg, rgba(78,161,255,.95), rgba(47,125,246,.95));
       color:#07111f;
-      font-weight:900;
+      font-weight:1000;
       padding:10px 12px;
-      border-radius: 12px;
+      border-radius:12px;
       cursor:pointer;
       transition: transform .12s ease, filter .12s ease;
     }
@@ -175,9 +159,9 @@
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.05);
       color: var(--text);
-      font-weight:800;
+      font-weight:900;
       padding:10px 12px;
-      border-radius: 12px;
+      border-radius:12px;
       cursor:pointer;
       transition: transform .12s ease, border-color .12s ease;
     }
@@ -186,24 +170,21 @@
       border:1px dashed rgba(255,255,255,.18);
       background: rgba(255,255,255,.02);
       color: var(--muted);
-      font-weight:800;
+      font-weight:900;
       padding:10px 12px;
-      border-radius: 12px;
+      border-radius:12px;
       cursor:pointer;
     }
+    .sr{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
 
-    /* Tables */
+    /* Table */
     .tablewrap{
       border:1px solid var(--stroke);
       border-radius: var(--r14);
       overflow:hidden;
       background: rgba(7,17,31,.28);
     }
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-    }
+    table{width:100%; border-collapse:separate; border-spacing:0}
     th, td{
       padding:10px;
       border-bottom:1px solid rgba(255,255,255,.06);
@@ -215,6 +196,8 @@
       font-size:12px;
       color: var(--muted);
       background: rgba(255,255,255,.03);
+      position:sticky; top:0;
+      z-index:1;
     }
     tr:last-child td{border-bottom:none}
     .num{font-family:var(--mono)}
@@ -226,14 +209,11 @@
       background: rgba(255,91,110,.10);
       color:#ffd0d7;
       cursor:pointer;
-      font-weight:900;
+      font-weight:1000;
     }
     .trash:hover{filter:brightness(1.06)}
-    .inline{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-    }
 
-    /* Right column sticky */
+    /* Right column */
     .rightcol .card{position:sticky; top:86px}
     @media (max-width:980px){ .rightcol .card{position:static} }
 
@@ -254,7 +234,21 @@
     .tile .v{margin-top:5px; font-size:18px; font-weight:1000; letter-spacing:.2px}
     .tile .s{margin-top:4px; font-size:12px; color:var(--muted)}
 
-    .divider{height:1px; background: rgba(255,255,255,.08); margin:12px 0}
+    /* Status pill */
+    .pill{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      display:flex; gap:8px; align-items:center;
+      white-space:nowrap;
+    }
+    .pill b{color:var(--text); font-weight:1000}
+    .pill.good{border-color:rgba(47,209,132,.35); background: rgba(47,209,132,.10); color:#c9f7df}
+    .pill.warn{border-color:rgba(255,209,102,.35); background: rgba(255,209,102,.10); color:#ffe9bc}
+    .pill.bad{border-color:rgba(255,91,110,.35); background: rgba(255,91,110,.10); color:#ffd0d7}
 
     /* Charts */
     .chart{
@@ -265,16 +259,8 @@
       overflow:auto;
     }
 
-    /* Pages */
-    .page{display:none}
-    .page.active{display:block}
-
     /* Footer note */
-    .note{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
-    }
+    .note{color:var(--muted); font-size:12px; line-height:1.45}
 
     /* Toast */
     .toast{
@@ -293,8 +279,8 @@
     .toast b{display:block; margin-bottom:3px}
     .toast .m{color:var(--muted); font-size:12px; line-height:1.35}
 
-    /* Small helpers */
-    .sr{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+    /* Small */
+    .inline{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
   </style>
 </head>
 
@@ -303,19 +289,16 @@
     <div class="wrap">
       <div class="topbar-inner">
         <div class="brand">
-          <div class="mark">⚓</div>
+          <div class="mark">NZ</div>
           <div>
-            <h1>MaritimeCII</h1>
-            <p>Carbon Intensity Indicator — operational efficiency rating & action planning</p>
+            <h1>IMO Net-Zero</h1>
+            <p>GHG Fuel Intensity (GFI) compliance — attained vs target, deficit/surplus, and cost exposure</p>
           </div>
         </div>
-
-        <div class="nav" aria-label="Primary navigation">
-          <button class="active" data-page="cii">CII Calculator</button>
-          <button data-page="ets">EU ETS</button>
-          <button data-page="fueleu">FuelEU Maritime</button>
-          <button data-page="voyage">Voyage Planner</button>
-          <button data-page="about">Who We Are</button>
+        <div class="chiprow">
+          <div class="chip">Metric: <b>GFI</b></div>
+          <div class="chip">Unit: <b>gCO₂e/MJ</b></div>
+          <div class="chip">Accounting: <b>Well-to-Wake</b></div>
         </div>
       </div>
     </div>
@@ -323,323 +306,227 @@
 
   <main>
     <div class="wrap">
+      <div class="page-title">
+        <h2>GFI Compliance Calculator</h2>
+        <p>Enter annual fuel consumption and pricing to compute attained GFI, target GFI, compliance balance, and an indicative cost using a two-tier RU mechanism.</p>
+      </div>
 
-      <!-- PAGE: CII -->
-      <section class="page active" id="page-cii">
-        <div style="padding:8px 2px 14px">
-          <h2 style="margin:0 0 4px; font-size:28px; letter-spacing:.2px">CII Calculator</h2>
-          <p class="subtitle" style="margin:0">Compute annual CO₂ emissions, attained CII (AER), required CII, and rating. Includes actionable targets and visuals.</p>
-        </div>
-
-        <div class="grid">
-          <!-- LEFT -->
-          <div class="card">
-            <div class="cardhead">
-              <h2>Inputs</h2>
-              <div class="inline">
-                <span class="pill">Metric: <b>AER</b></span>
-                <span class="pill">Unit: <b>gCO₂ / (DWT·nm)</b></span>
-              </div>
-            </div>
-
-            <div class="body">
-              <div class="row">
-                <div class="col">
-                  <label for="shipType">Ship Type</label>
-                  <select id="shipType">
-                    <option value="bulk">Bulk Carrier</option>
-                    <option value="tanker">Tanker</option>
-                    <option value="container">Container Ship</option>
-                    <option value="gas">Gas Carrier (LNG/LPG)</option>
-                    <option value="general">General Cargo</option>
-                  </select>
-                </div>
-
-                <div class="col">
-                  <label for="year">Reporting Year</label>
-                  <select id="year">
-                    <option>2023</option>
-                    <option>2024</option>
-                    <option selected>2025</option>
-                    <option>2026</option>
-                    <option>2027</option>
-                    <option>2028</option>
-                    <option>2029</option>
-                    <option>2030</option>
-                  </select>
-                </div>
-
-                <div class="col">
-                  <label for="dwt">Capacity (DWT)</label>
-                  <input id="dwt" type="number" step="1" value="180000" />
-                </div>
-
-                <div class="col">
-                  <label for="distance">Annual Distance (nm)</label>
-                  <input id="distance" type="number" step="1" value="10000" />
-                </div>
-              </div>
-
-              <div class="row" style="margin-top:10px">
-                <div class="col">
-                  <label for="corr">Correction Factor</label>
-                  <input id="corr" type="number" step="0.01" value="1.00" />
-                  <div class="hint">Use 1.00 if no voyage/ice/electrical corrections apply.</div>
-                </div>
-
-                <div class="col">
-                  <label for="reqMode">Required CII Mode</label>
-                  <select id="reqMode">
-                    <option value="auto" selected>Auto (coefficients)</option>
-                    <option value="manual">Manual</option>
-                  </select>
-                  <div class="hint">Auto uses adjustable reference coefficients by ship type; Manual lets you set required CII directly.</div>
-                </div>
-
-                <div class="col" id="reqManualWrap" style="display:none">
-                  <label for="reqManual">Required CII (gCO₂ / (DWT·nm))</label>
-                  <input id="reqManual" type="number" step="0.0001" value="2.3254" />
-                </div>
-              </div>
-
-              <div class="divider"></div>
-
-              <div class="card" style="border-radius:16px; box-shadow:none; border:1px solid var(--stroke); background: rgba(255,255,255,.02);">
-                <div class="cardhead" style="border-bottom:1px solid var(--stroke); border-radius:16px 16px 0 0;">
-                  <h2 style="margin:0">Fuel Consumption</h2>
-                  <div class="inline">
-                    <button class="secondary" id="btnAddFuel" type="button">+ Add Fuel</button>
-                    <button class="ghost" id="btnLoadExample" type="button">Load Example</button>
-                  </div>
-                </div>
-
-                <div class="body">
-                  <div class="tablewrap">
-                    <table aria-label="Fuel table">
-                      <thead>
-                        <tr>
-                          <th>Fuel</th>
-                          <th class="num">CO₂ Factor (tCO₂/t)</th>
-                          <th class="num">Tonnes (t)</th>
-                          <th class="cell-actions"></th>
-                        </tr>
-                      </thead>
-                      <tbody id="fuelBody"></tbody>
-                    </table>
-                  </div>
-
-                  <div class="row" style="margin-top:10px; align-items:center">
-                    <div class="col">
-                      <label for="fuelPreset">Preset fuel</label>
-                      <select id="fuelPreset">
-                        <option value="HFO">HFO</option>
-                        <option value="MGO">MGO/MDO</option>
-                        <option value="LFO">LFO</option>
-                        <option value="LNG">LNG</option>
-                        <option value="Methanol">Methanol</option>
-                        <option value="Biofuel">Biofuel</option>
-                      </select>
-                    </div>
-                    <div class="col">
-                      <label for="fuelName">Fuel name</label>
-                      <input id="fuelName" placeholder="e.g., VLSFO" />
-                    </div>
-                    <div class="col">
-                      <label for="fuelFactor">tCO₂/t</label>
-                      <input id="fuelFactor" type="number" step="0.001" placeholder="e.g., 3.114" />
-                    </div>
-                    <div class="col">
-                      <label for="fuelTonnes">tonnes</label>
-                      <input id="fuelTonnes" type="number" step="0.1" placeholder="e.g., 2000" />
-                    </div>
-                    <div class="col" style="min-width:140px">
-                      <button class="primary" id="btnQuickAdd" type="button" style="width:100%">Add</button>
-                    </div>
-                  </div>
-
-                  <div class="hint">
-                    Tip: choose a preset to auto-fill a typical CO₂ factor, then adjust if needed.
-                  </div>
-                </div>
-              </div>
-
-              <div class="divider"></div>
-
-              <div class="btnrow">
-                <button class="primary" id="btnCalc" type="button">Calculate</button>
-                <button class="secondary" id="btnTargets" type="button">Generate Targets</button>
-                <button class="secondary" id="btnReset" type="button">Reset</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT -->
-          <div class="rightcol">
-            <div class="card">
-              <div class="cardhead">
-                <h2>Results</h2>
-                <span id="ratingPill" class="pill">Rating: <b>—</b></span>
-              </div>
-
-              <div class="body">
-                <div class="kpi">
-                  <div class="tile">
-                    <div class="k">Total CO₂ Emissions</div>
-                    <div class="v num" id="kCO2">—</div>
-                    <div class="s">tonnes CO₂</div>
-                  </div>
-                  <div class="tile">
-                    <div class="k">Attained CII (AER)</div>
-                    <div class="v num" id="kAttained">—</div>
-                    <div class="s">gCO₂ / (DWT·nm)</div>
-                  </div>
-                  <div class="tile">
-                    <div class="k">Required CII</div>
-                    <div class="v num" id="kRequired">—</div>
-                    <div class="s">gCO₂ / (DWT·nm)</div>
-                  </div>
-                  <div class="tile">
-                    <div class="k">CII Ratio</div>
-                    <div class="v num" id="kRatio">—</div>
-                    <div class="s">Attained / Required</div>
-                  </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="chart">
-                  <svg id="gauge" width="520" height="210" viewBox="0 0 520 210" role="img" aria-label="CII gauge"></svg>
-                  <div class="hint" style="margin-top:8px">
-                    Lower is better. The marker shows your attained CII relative to the required threshold and grade bands.
-                  </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="chart">
-                  <svg id="bandChart" width="520" height="190" viewBox="0 0 520 190" role="img" aria-label="Grade bands"></svg>
-                  <div class="hint" style="margin-top:8px">
-                    Grade bands are derived from the required CII with configurable multipliers (industry practice varies by ship type/year).
-                  </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="note">
-                  For compliance-grade outputs, connect this UI to authoritative reference datasets and your verified operational data sources.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Actionable targets -->
-        <div class="card" style="margin-top:16px">
+      <div class="grid">
+        <!-- LEFT: INPUTS -->
+        <div class="card">
           <div class="cardhead">
-            <h2>Actionable Targets</h2>
+            <h3>Inputs</h3>
             <div class="inline">
-              <span class="pill" id="quickKpi">Fastest improvement: <b>—</b></span>
+              <span class="pill">Compliance year: <b id="chipYear">2028</b></span>
+              <span class="pill">Reference GFI: <b class="num" id="chipRef">93.30</b></span>
             </div>
           </div>
+
           <div class="body">
             <div class="row">
               <div class="col">
-                <div class="tile">
-                  <div class="k">Distance needed for Grade B (fuel fixed)</div>
-                  <div class="v num" id="tDistB">—</div>
-                  <div class="s">nm per year</div>
-                </div>
+                <label for="year">Compliance year</label>
+                <select id="year">
+                  <option>2028</option>
+                  <option>2029</option>
+                  <option>2030</option>
+                  <option>2031</option>
+                  <option>2032</option>
+                  <option>2035</option>
+                  <option>2040</option>
+                  <option>2050</option>
+                </select>
               </div>
+
               <div class="col">
-                <div class="tile">
-                  <div class="k">CO₂ reduction needed for Grade B (distance fixed)</div>
-                  <div class="v num" id="tCO2B">—</div>
-                  <div class="s">% reduction</div>
-                </div>
+                <label for="refGFI">Reference GFI (gCO₂e/MJ)</label>
+                <input id="refGFI" type="number" step="0.01" value="93.30" />
+                <div class="hint">Set your reference baseline used to compute the target.</div>
               </div>
+
               <div class="col">
-                <div class="tile">
-                  <div class="k">Distance needed for Grade C (fuel fixed)</div>
-                  <div class="v num" id="tDistC">—</div>
-                  <div class="s">nm per year</div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="tile">
-                  <div class="k">CO₂ reduction needed for Grade C (distance fixed)</div>
-                  <div class="v num" id="tCO2C">—</div>
-                  <div class="s">% reduction</div>
-                </div>
+                <label for="reductionPct">Target reduction (%)</label>
+                <input id="reductionPct" type="number" step="0.1" value="5.0" />
+                <div class="hint">Target GFI = Reference × (1 − reduction%).</div>
               </div>
             </div>
 
             <div class="divider"></div>
-            <div class="note">
-              These targets are computed from your current inputs (fuel mix, DWT, distance, correction factor) and the grade-band thresholds.
+
+            <div class="row">
+              <div class="col">
+                <label for="lngPreset">LNG methane slip preset</label>
+                <select id="lngPreset">
+                  <option value="none" selected>None / ignore slip</option>
+                  <option value="2s">2-stroke DF (typical)</option>
+                  <option value="4s">4-stroke DF (typical)</option>
+                  <option value="hpdi">HPDI (low slip)</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+              <div class="col">
+                <label for="lngSlipAddon">LNG slip add-on (gCO₂e/MJ)</label>
+                <input id="lngSlipAddon" type="number" step="0.1" value="0.0" />
+                <div class="hint">Applied only to LNG rows. Keep 0.0 to disable.</div>
+              </div>
+              <div class="col">
+                <label for="unitsBasis">Compliance balance basis</label>
+                <select id="unitsBasis">
+                  <option value="tco2e" selected>tCO₂e equivalent</option>
+                  <option value="gco2e">gCO₂e</option>
+                </select>
+                <div class="hint">Balance is derived from (attained − target) × total energy.</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="inline" style="justify-content:space-between">
+              <h3 style="margin:0; font-size:14px; letter-spacing:.2px;">Annual fuel consumption</h3>
+              <div class="btnrow">
+                <button class="secondary" id="btnAddFuel" type="button">+ Add fuel</button>
+                <button class="ghost" id="btnLoadExample" type="button">Load example</button>
+                <button class="secondary" id="btnImportCSV" type="button">Import CSV</button>
+                <input class="sr" id="fileCSV" type="file" accept=".csv,text/csv" />
+              </div>
+            </div>
+
+            <div class="hint" style="margin-top:8px">
+              Attained GFI is computed as an energy-weighted average: Σ(energy × factor) / Σ(energy).
+            </div>
+
+            <div style="margin-top:10px; max-height:340px; overflow:auto; border-radius:14px;">
+              <div class="tablewrap">
+                <table aria-label="Fuel table">
+                  <thead>
+                    <tr>
+                      <th>Fuel</th>
+                      <th class="num">LHV (MJ/t)</th>
+                      <th class="num">GHG factor (gCO₂e/MJ)</th>
+                      <th class="num">Tonnes</th>
+                      <th class="num">Price (USD/t)</th>
+                      <th class="cell-actions"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="fuelBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row">
+              <div class="col">
+                <label for="surplusPrice">Surplus trading price (USD per tCO₂e)</label>
+                <input id="surplusPrice" type="number" step="1" value="240" />
+              </div>
+              <div class="col">
+                <label for="ruTier1">Tier 1 RU price (USD per tCO₂e)</label>
+                <input id="ruTier1" type="number" step="1" value="145" />
+              </div>
+              <div class="col">
+                <label for="ruTier2">Tier 2 RU price (USD per tCO₂e)</label>
+                <input id="ruTier2" type="number" step="1" value="380" />
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="btnrow">
+              <button class="primary" id="btnCalc" type="button">Calculate</button>
+              <button class="secondary" id="btnExportCSV" type="button">Export CSV</button>
+              <button class="secondary" id="btnReset" type="button">Reset</button>
+            </div>
+
+            <div class="hint">
+              Costs are indicative and depend on your chosen pricing assumptions and unit basis.
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- PAGE: ETS -->
-      <section class="page" id="page-ets">
-        <div class="card">
-          <div class="cardhead">
-            <h2>EU ETS</h2>
-            <span class="pill">Module</span>
-          </div>
-          <div class="body">
-            <p class="subtitle">
-              Add your EU ETS calculator here (voyage scope, ETS coverage, EUA price, cost allocation, forecasting).
-            </p>
+        <!-- RIGHT: RESULTS -->
+        <div class="rightcol">
+          <div class="card">
+            <div class="cardhead">
+              <h3>Results</h3>
+              <span id="statusPill" class="pill">Status: <b>—</b></span>
+            </div>
+
+            <div class="body">
+              <div class="kpi">
+                <div class="tile">
+                  <div class="k">Attained GFI</div>
+                  <div class="v num" id="kAttained">—</div>
+                  <div class="s">gCO₂e/MJ</div>
+                </div>
+                <div class="tile">
+                  <div class="k">Target GFI</div>
+                  <div class="v num" id="kTarget">—</div>
+                  <div class="s">gCO₂e/MJ</div>
+                </div>
+                <div class="tile">
+                  <div class="k">Total energy</div>
+                  <div class="v num" id="kEnergy">—</div>
+                  <div class="s">MJ</div>
+                </div>
+                <div class="tile">
+                  <div class="k">Balance</div>
+                  <div class="v num" id="kBalance">—</div>
+                  <div class="s" id="kBalanceUnit">tCO₂e</div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="kpi">
+                <div class="tile">
+                  <div class="k">Fuel cost</div>
+                  <div class="v num" id="kFuelCost">—</div>
+                  <div class="s">USD</div>
+                </div>
+                <div class="tile">
+                  <div class="k">RU cost</div>
+                  <div class="v num" id="kRUCost">—</div>
+                  <div class="s">USD</div>
+                </div>
+                <div class="tile">
+                  <div class="k">Surplus value</div>
+                  <div class="v num" id="kSurplusVal">—</div>
+                  <div class="s">USD</div>
+                </div>
+                <div class="tile">
+                  <div class="k">Net total</div>
+                  <div class="v num" id="kNetTotal">—</div>
+                  <div class="s">USD</div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="chart">
+                <svg id="gfiGauge" width="520" height="210" viewBox="0 0 520 210" role="img" aria-label="GFI gauge"></svg>
+                <div class="hint" style="margin-top:8px">
+                  Lower attained GFI is better. The marker shows attained vs target.
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="chart">
+                <svg id="mixChart" width="520" height="200" viewBox="0 0 520 200" role="img" aria-label="Fuel mix chart"></svg>
+                <div class="hint" style="margin-top:8px">
+                  Energy share by fuel (MJ). Values are derived from tonnes × LHV.
+                </div>
+              </div>
+
+              <div class="divider"></div>
+              <div class="note">
+                For compliance-grade outputs, connect verified LCA pathways and official factors into this interface.
+              </div>
+            </div>
           </div>
         </div>
-      </section>
-
-      <!-- PAGE: FUELEU -->
-      <section class="page" id="page-fueleu">
-        <div class="card">
-          <div class="cardhead">
-            <h2>FuelEU Maritime</h2>
-            <span class="pill">Module</span>
-          </div>
-          <div class="body">
-            <p class="subtitle">
-              Add FuelEU GHG intensity accounting, pooling/banking/borrowing, and compliance cost optimization here.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE: VOYAGE -->
-      <section class="page" id="page-voyage">
-        <div class="card">
-          <div class="cardhead">
-            <h2>Voyage Planner</h2>
-            <span class="pill">Module</span>
-          </div>
-          <div class="body">
-            <p class="subtitle">
-              Add route inputs, speed scenarios, fuel planning, weather/ETA integration, and emissions/cost outcomes here.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE: ABOUT -->
-      <section class="page" id="page-about">
-        <div class="card">
-          <div class="cardhead">
-            <h2>Who We Are</h2>
-            <span class="pill">Info</span>
-          </div>
-          <div class="body">
-            <p class="subtitle">
-              Add your company background, methodology notes, contact details, and privacy policy links here.
-            </p>
-          </div>
-        </div>
-      </section>
+      </div>
 
     </div>
   </main>
@@ -651,35 +538,35 @@
 
 <script>
   /* -----------------------------
-     Navigation
+     Utilities
   ----------------------------- */
-  const navButtons = Array.from(document.querySelectorAll(".nav button"));
-  const pages = new Map([
-    ["cii", document.getElementById("page-cii")],
-    ["ets", document.getElementById("page-ets")],
-    ["fueleu", document.getElementById("page-fueleu")],
-    ["voyage", document.getElementById("page-voyage")],
-    ["about", document.getElementById("page-about")]
-  ]);
+  const $ = (id)=>document.getElementById(id);
 
-  navButtons.forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      navButtons.forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      const p = btn.dataset.page;
-      pages.forEach((el)=>el.classList.remove("active"));
-      pages.get(p).classList.add("active");
-    });
-  });
+  function uid(){
+    return Math.random().toString(16).slice(2) + Date.now().toString(16);
+  }
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+  function fmt(n, digits=2){
+    if(n === null || n === undefined || Number.isNaN(n)) return "—";
+    return Number(n).toLocaleString("en-US", {maximumFractionDigits:digits, minimumFractionDigits:digits});
+  }
+  function fmt0(n){
+    if(n === null || n === undefined || Number.isNaN(n)) return "—";
+    return Number(n).toLocaleString("en-US", {maximumFractionDigits:0});
+  }
 
-  /* -----------------------------
-     Toast
-  ----------------------------- */
-  const toastEl = document.getElementById("toast");
-  const toastTitle = document.getElementById("toastTitle");
-  const toastMsg = document.getElementById("toastMsg");
-  let toastTimer = null;
-
+  /* Toast */
+  const toastEl = $("toast");
+  const toastTitle = $("toastTitle");
+  const toastMsg = $("toastMsg");
+  let toastTimer=null;
   function toast(t, m){
     toastTitle.textContent = t;
     toastMsg.textContent = m;
@@ -689,81 +576,34 @@
   }
 
   /* -----------------------------
-     CII Calculator Data Model
+     Data model
   ----------------------------- */
-  const $ = (id)=>document.getElementById(id);
-
-  const FUEL_FACTORS = {
-    HFO: 3.114,
-    "MGO": 3.206,
-    LFO: 3.151,
-    LNG: 2.750,
-    Methanol: 1.375,
-    Biofuel: 0.000
+  const LNG_SLIP_PRESETS = {
+    none: 0.0,
+    "2s": 3.0,   // gCO2e/MJ add-on
+    "4s": 6.0,   // gCO2e/MJ add-on
+    hpdi: 0.8,
+    custom: null
   };
 
-  // Auto required CII model (configurable):
-  // Required = (a * DWT^-c) * (1 - reductionByYear)
-  // Coefficients here are placeholders for a configurable model; replace with authoritative datasets in production.
-  const REQ_COEFF = {
-    bulk:      { a: 3.200, c: 0.200 },
-    tanker:    { a: 3.000, c: 0.195 },
-    container: { a: 5.000, c: 0.250 },
-    gas:       { a: 4.100, c: 0.230 },
-    general:   { a: 3.600, c: 0.210 }
-  };
-
-  const YEAR_REDUCTION = {
-    2023: 0.05,
-    2024: 0.07,
-    2025: 0.09,
-    2026: 0.11,
-    2027: 0.13,
-    2028: 0.15,
-    2029: 0.17,
-    2030: 0.19
-  };
-
-  // Grade bands derived from required CII using multipliers
-  // Lower is better. Bands are defined by ratio = attained/required.
-  // A <= 0.85, B <= 0.95, C <= 1.05, D <= 1.15, else E.
-  const GRADE_RATIOS = [
-    {grade:"A", max:0.85, color:"var(--good)"},
-    {grade:"B", max:0.95, color:"var(--good)"},
-    {grade:"C", max:1.05, color:"var(--warn)"},
-    {grade:"D", max:1.15, color:"var(--bad)"},
-    {grade:"E", max:Infinity, color:"var(--bad)"},
+  const DEFAULT_FUELS = [
+    { id: uid(), name:"Heavy Fuel Oil (HFO)", lhv:40200, factor:92.78, tonnes:0, price:0, kind:"HFO" },
+    { id: uid(), name:"Marine Gas Oil (MGO)", lhv:43000, factor:90.63, tonnes:0, price:0, kind:"MGO" },
+    { id: uid(), name:"Liquefied Natural Gas (LNG)", lhv:48000, factor:77.18, tonnes:0, price:0, kind:"LNG" },
+    { id: uid(), name:"Biofuel (generic)", lhv:40648, factor:35.00, tonnes:0, price:0, kind:"BIO" },
+    { id: uid(), name:"e-ammonia", lhv:18600, factor:4.00, tonnes:0, price:0, kind:"EFUEL" },
+    { id: uid(), name:"bio-methanol", lhv:19900, factor:17.00, tonnes:0, price:0, kind:"BIO" }
   ];
 
+  const STORAGE_KEY = "imo_gfi_calculator_v1";
+
   const state = {
-    fuels: [
-      { id: uid(), name:"HFO", factor: 3.114, tonnes: 2000 },
-      { id: uid(), name:"MGO/MDO", factor: 3.206, tonnes: 400 },
-      { id: uid(), name:"LFO", factor: 3.151, tonnes: 4000 },
-    ],
+    fuels: JSON.parse(JSON.stringify(DEFAULT_FUELS)),
     last: null
   };
 
-  function uid(){
-    return Math.random().toString(16).slice(2) + Date.now().toString(16);
-  }
-
-  function fmt(n, digits=4){
-    if(n === null || n === undefined || Number.isNaN(n)) return "—";
-    return Number(n).toLocaleString("en-US", {
-      maximumFractionDigits:digits,
-      minimumFractionDigits:digits
-    });
-  }
-  function fmt0(n){
-    if(n === null || n === undefined || Number.isNaN(n)) return "—";
-    return Number(n).toLocaleString("en-US", {
-      maximumFractionDigits:0
-    });
-  }
-
   /* -----------------------------
-     Fuel table rendering
+     Render fuels table
   ----------------------------- */
   const fuelBody = $("fuelBody");
 
@@ -772,18 +612,12 @@
     state.fuels.forEach(f=>{
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>
-          <input aria-label="Fuel name" value="${escapeHtml(f.name)}" data-k="name" data-id="${f.id}">
-        </td>
-        <td class="num">
-          <input aria-label="CO2 factor" type="number" step="0.001" value="${Number(f.factor)}" data-k="factor" data-id="${f.id}">
-        </td>
-        <td class="num">
-          <input aria-label="Tonnes" type="number" step="0.1" value="${Number(f.tonnes)}" data-k="tonnes" data-id="${f.id}">
-        </td>
-        <td class="cell-actions">
-          <button class="trash" title="Remove" data-remove="${f.id}">✕</button>
-        </td>
+        <td><input aria-label="Fuel name" value="${escapeHtml(f.name)}" data-id="${f.id}" data-k="name"></td>
+        <td class="num"><input aria-label="LHV" type="number" step="1" value="${Number(f.lhv)}" data-id="${f.id}" data-k="lhv"></td>
+        <td class="num"><input aria-label="GHG factor" type="number" step="0.01" value="${Number(f.factor)}" data-id="${f.id}" data-k="factor"></td>
+        <td class="num"><input aria-label="Tonnes" type="number" step="0.01" value="${Number(f.tonnes)}" data-id="${f.id}" data-k="tonnes"></td>
+        <td class="num"><input aria-label="Price" type="number" step="0.01" value="${Number(f.price)}" data-id="${f.id}" data-k="price"></td>
+        <td class="cell-actions"><button class="trash" title="Remove" data-remove="${f.id}">✕</button></td>
       `;
       fuelBody.appendChild(tr);
     });
@@ -796,6 +630,7 @@
         if(!f) return;
         if(k==="name") f.name = inp.value;
         else f[k] = Number(inp.value);
+        persist();
         if(state.last) calculateAndRender(false);
       });
     });
@@ -805,258 +640,205 @@
         const id = btn.dataset.remove;
         state.fuels = state.fuels.filter(x=>x.id!==id);
         renderFuelTable();
-        calculateAndRender(false);
+        persist();
+        if(state.last) calculateAndRender(false);
       });
     });
   }
 
-  function escapeHtml(s){
-    return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
   /* -----------------------------
-     Quick add fuel row
+     Inputs & persistence
   ----------------------------- */
-  $("fuelPreset").addEventListener("change", ()=>{
-    const preset = $("fuelPreset").value;
-    $("fuelName").value = preset === "MGO" ? "MGO/MDO" : preset;
-    $("fuelFactor").value = (FUEL_FACTORS[preset] ?? "").toString();
-  });
+  function getInputs(){
+    const year = Number($("year").value);
+    const refGFI = Number($("refGFI").value);
+    const reductionPct = Number($("reductionPct").value);
+    const target = refGFI * (1 - reductionPct/100);
 
-  // Initialize preset field
-  $("fuelPreset").dispatchEvent(new Event("change"));
+    const unitsBasis = $("unitsBasis").value;
 
-  $("btnQuickAdd").addEventListener("click", ()=>{
-    const name = $("fuelName").value.trim() || $("fuelPreset").value;
-    const factor = Number($("fuelFactor").value);
-    const tonnes = Number($("fuelTonnes").value);
+    const surplusPrice = Number($("surplusPrice").value);
+    const ru1 = Number($("ruTier1").value);
+    const ru2 = Number($("ruTier2").value);
 
-    if(!name || Number.isNaN(factor) || Number.isNaN(tonnes)){
-      toast("Missing input", "Provide fuel name, CO₂ factor, and tonnes.");
-      return;
-    }
-    state.fuels.push({ id: uid(), name, factor, tonnes });
-    $("fuelTonnes").value = "";
-    renderFuelTable();
-    calculateAndRender(false);
-  });
+    const preset = $("lngPreset").value;
+    let slipAddon = LNG_SLIP_PRESETS[preset];
+    if(preset === "custom") slipAddon = Number($("lngSlipAddon").value);
+    if(slipAddon === null || Number.isNaN(slipAddon)) slipAddon = 0.0;
 
-  $("btnAddFuel").addEventListener("click", ()=>{
-    state.fuels.push({ id: uid(), name:"New fuel", factor:3.114, tonnes:0 });
-    renderFuelTable();
-  });
-
-  $("btnLoadExample").addEventListener("click", ()=>{
-    $("shipType").value = "bulk";
-    $("year").value = "2025";
-    $("dwt").value = "180000";
-    $("distance").value = "10000";
-    $("corr").value = "1.00";
-
-    state.fuels = [
-      { id: uid(), name:"HFO", factor: 3.114, tonnes: 2000 },
-      { id: uid(), name:"MGO/MDO", factor: 3.206, tonnes: 400 },
-      { id: uid(), name:"LFO", factor: 3.151, tonnes: 4000 },
-    ];
-    renderFuelTable();
-    calculateAndRender(true);
-  });
-
-  $("btnReset").addEventListener("click", ()=>{
-    $("shipType").value = "bulk";
-    $("year").value = "2025";
-    $("dwt").value = "180000";
-    $("distance").value = "10000";
-    $("corr").value = "1.00";
-    $("reqMode").value = "auto";
-    syncReqMode();
-
-    state.fuels = [
-      { id: uid(), name:"HFO", factor: 3.114, tonnes: 0 },
-      { id: uid(), name:"MGO/MDO", factor: 3.206, tonnes: 0 },
-    ];
-    state.last = null;
-    renderFuelTable();
-    renderKPIs(null);
-    drawGauge(null);
-    drawBands(null);
-    toast("Reset complete", "Inputs have been restored.");
-  });
-
-  /* -----------------------------
-     Required CII mode
-  ----------------------------- */
-  function syncReqMode(){
-    const mode = $("reqMode").value;
-    $("reqManualWrap").style.display = (mode === "manual") ? "block" : "none";
-  }
-  $("reqMode").addEventListener("change", ()=>{
-    syncReqMode();
-    if(state.last) calculateAndRender(false);
-  });
-  syncReqMode();
-
-  /* -----------------------------
-     Core calculations
-  ----------------------------- */
-  function calcTotalCO2(){
-    // tCO2 = sum(tonnes * factor)
-    let total = 0;
-    for(const f of state.fuels){
-      const t = Number(f.tonnes) || 0;
-      const cf = Number(f.factor) || 0;
-      total += t * cf;
-    }
-    return total; // tCO2
+    return { year, refGFI, reductionPct, target, unitsBasis, surplusPrice, ru1, ru2, slipAddon, preset };
   }
 
-  function calcAttainedCII(totalCO2_t, dwt, distance_nm, corr){
-    // AER in gCO2/(DWT*nm):
-    // totalCO2_t * 1e6 g/t / (DWT * distance) * correction
-    if(dwt<=0 || distance_nm<=0) return NaN;
-    const aer = (totalCO2_t * 1e6) / (dwt * distance_nm) * corr;
-    return aer;
+  function persist(){
+    const payload = {
+      inputs: {
+        year: $("year").value,
+        refGFI: $("refGFI").value,
+        reductionPct: $("reductionPct").value,
+        surplusPrice: $("surplusPrice").value,
+        ruTier1: $("ruTier1").value,
+        ruTier2: $("ruTier2").value,
+        lngPreset: $("lngPreset").value,
+        lngSlipAddon: $("lngSlipAddon").value,
+        unitsBasis: $("unitsBasis").value
+      },
+      fuels: state.fuels
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   }
 
-  function calcRequiredCII(shipType, year, dwt){
-    const coeff = REQ_COEFF[shipType] || REQ_COEFF.bulk;
-    const yred = YEAR_REDUCTION[Number(year)] ?? 0.09;
-    const base = coeff.a * Math.pow(Math.max(dwt, 1), -coeff.c);
-    return base * (1 - yred);
-  }
-
-  function gradeFromRatio(ratio){
-    for(const b of GRADE_RATIOS){
-      if(ratio <= b.max){
-        return { grade: b.grade, color: b.color };
+  function restore(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const payload = JSON.parse(raw);
+      if(payload?.inputs){
+        $("year").value = payload.inputs.year ?? $("year").value;
+        $("refGFI").value = payload.inputs.refGFI ?? $("refGFI").value;
+        $("reductionPct").value = payload.inputs.reductionPct ?? $("reductionPct").value;
+        $("surplusPrice").value = payload.inputs.surplusPrice ?? $("surplusPrice").value;
+        $("ruTier1").value = payload.inputs.ruTier1 ?? $("ruTier1").value;
+        $("ruTier2").value = payload.inputs.ruTier2 ?? $("ruTier2").value;
+        $("lngPreset").value = payload.inputs.lngPreset ?? $("lngPreset").value;
+        $("lngSlipAddon").value = payload.inputs.lngSlipAddon ?? $("lngSlipAddon").value;
+        $("unitsBasis").value = payload.inputs.unitsBasis ?? $("unitsBasis").value;
       }
+      if(Array.isArray(payload?.fuels) && payload.fuels.length){
+        state.fuels = payload.fuels.map(f=>({
+          id: f.id || uid(),
+          name: String(f.name ?? "Fuel"),
+          lhv: Number(f.lhv ?? 0),
+          factor: Number(f.factor ?? 0),
+          tonnes: Number(f.tonnes ?? 0),
+          price: Number(f.price ?? 0),
+          kind: String(f.kind ?? "")
+        }));
+      }
+    }catch(_){}
+  }
+
+  /* -----------------------------
+     Core calculation
+  ----------------------------- */
+  function adjustedFactor(f, slipAddon){
+    // Apply slip add-on only to LNG rows
+    if((f.kind || "").toUpperCase() === "LNG" || (f.name || "").toUpperCase().includes("LNG")){
+      return Number(f.factor) + Number(slipAddon || 0);
     }
-    return { grade:"E", color:"var(--bad)" };
+    return Number(f.factor);
   }
 
   function compute(){
-    const shipType = $("shipType").value;
-    const year = Number($("year").value);
-    const dwt = Number($("dwt").value);
-    const distance = Number($("distance").value);
-    const corr = Number($("corr").value);
+    const inp = getInputs();
 
-    const totalCO2 = calcTotalCO2();
-    const attained = calcAttainedCII(totalCO2, dwt, distance, corr);
+    let totalEnergyMJ = 0;
+    let weighted = 0; // gCO2e
+    let fuelCostUSD = 0;
 
-    let required;
-    if($("reqMode").value === "manual"){
-      required = Number($("reqManual").value);
-    } else {
-      required = calcRequiredCII(shipType, year, dwt);
-    }
+    const breakdown = state.fuels.map(f=>{
+      const tonnes = Number(f.tonnes) || 0;
+      const lhv = Number(f.lhv) || 0;
+      const energyMJ = tonnes * lhv;
 
-    const ratio = (required>0) ? (attained / required) : NaN;
-    const grade = gradeFromRatio(ratio);
+      const factor = adjustedFactor(f, inp.slipAddon);
+      const emissions_g = energyMJ * factor; // gCO2e
+      const cost = tonnes * (Number(f.price) || 0);
 
-    // Grade thresholds as CII values
-    const thresholds = {
-      A: required * GRADE_RATIOS[0].max,
-      B: required * GRADE_RATIOS[1].max,
-      C: required * GRADE_RATIOS[2].max,
-      D: required * GRADE_RATIOS[3].max,
-      E: required * 10
+      totalEnergyMJ += energyMJ;
+      weighted += emissions_g;
+      fuelCostUSD += cost;
+
+      return {
+        ...f,
+        adjFactor: factor,
+        energyMJ,
+        emissions_g,
+        costUSD: cost
+      };
+    });
+
+    const attained = totalEnergyMJ > 0 ? (weighted / totalEnergyMJ) : 0;
+    const target = inp.target;
+
+    // Delta emissions vs target, based on energy
+    // Excess_g = (attained - target) * totalEnergyMJ
+    const excess_g = (attained - target) * totalEnergyMJ;
+
+    // Convert to tCO2e for pricing
+    const excess_t = excess_g / 1e6;
+    const deficit_t = Math.max(0, excess_t);
+    const surplus_t = Math.max(0, -excess_t);
+
+    // Two-tier RU pricing (70/30 split for illustration; adjust to your chosen rulebook)
+    const t1 = deficit_t * 0.7;
+    const t2 = deficit_t * 0.3;
+    const ruCostUSD = t1 * inp.ru1 + t2 * inp.ru2;
+
+    const surplusValueUSD = surplus_t * inp.surplusPrice;
+
+    const netUSD = fuelCostUSD + ruCostUSD - surplusValueUSD;
+
+    const balanceDisplay = inp.unitsBasis === "gco2e"
+      ? (-excess_g) // positive means surplus
+      : (-excess_t); // positive means surplus
+
+    const balanceUnitLabel = inp.unitsBasis === "gco2e" ? "gCO₂e" : "tCO₂e";
+
+    return {
+      inputs: inp,
+      breakdown,
+      totalEnergyMJ,
+      attainedGFI: attained,
+      targetGFI: target,
+      excess_g,
+      excess_t,
+      deficit_t,
+      surplus_t,
+      balanceDisplay,
+      balanceUnitLabel,
+      fuelCostUSD,
+      ruCostUSD,
+      surplusValueUSD,
+      netUSD
     };
-
-    return { shipType, year, dwt, distance, corr, totalCO2, attained, required, ratio, grade, thresholds };
   }
 
   /* -----------------------------
-     Results rendering
+     Rendering results
   ----------------------------- */
-  const kCO2 = $("kCO2");
-  const kAttained = $("kAttained");
-  const kRequired = $("kRequired");
-  const kRatio = $("kRatio");
-  const ratingPill = $("ratingPill");
+  function setStatus(res){
+    const pill = $("statusPill");
+    const compliant = res.attainedGFI <= res.targetGFI;
 
-  function renderKPIs(res){
-    if(!res){
-      kCO2.textContent = "—";
-      kAttained.textContent = "—";
-      kRequired.textContent = "—";
-      kRatio.textContent = "—";
-      ratingPill.className = "pill";
-      ratingPill.innerHTML = `Rating: <b>—</b>`;
-      $("quickKpi").innerHTML = `Fastest improvement: <b>—</b>`;
-      $("tDistB").textContent = "—";
-      $("tCO2B").textContent = "—";
-      $("tDistC").textContent = "—";
-      $("tCO2C").textContent = "—";
-      return;
+    if(compliant){
+      pill.className = "pill good";
+      pill.innerHTML = `Status: <b>Compliant</b>`;
+    }else{
+      pill.className = "pill bad";
+      pill.innerHTML = `Status: <b>Non-compliant</b>`;
     }
-
-    kCO2.textContent = `${fmt(res.totalCO2, 1)} t`;
-    kAttained.textContent = fmt(res.attained, 4);
-    kRequired.textContent = fmt(res.required, 4);
-    kRatio.textContent = fmt(res.ratio, 4);
-
-    const g = res.grade.grade;
-    const pillClass = (g==="A"||g==="B") ? "pill good" : (g==="C") ? "pill warn" : "pill bad";
-    ratingPill.className = pillClass;
-    ratingPill.innerHTML = `Rating: <b>${g}</b>`;
-
-    // Quick KPI: easiest between reaching C or D from current
-    const targetGrade = (g==="E") ? "D" : (g==="D") ? "C" : (g==="C") ? "B" : "A";
-    $("quickKpi").innerHTML = `Fastest improvement: <b>target Grade ${targetGrade}</b>`;
   }
 
-  function generateTargets(res){
-    if(!res || !isFinite(res.attained) || !isFinite(res.required)){
-      toast("Calculate first", "Provide inputs and run a calculation before generating targets.");
-      return;
-    }
+  function renderKPIs(res){
+    $("chipYear").textContent = res.inputs.year;
+    $("chipRef").textContent = fmt(res.inputs.refGFI, 2);
 
-    // Using current fuel fixed => CO2 fixed.
-    // Solve distance needed to achieve grade threshold:
-    // attained = totalCO2*1e6/(dwt*distance)*corr <= threshold
-    // => distance >= totalCO2*1e6*corr/(dwt*threshold)
-    const totalCO2 = res.totalCO2;
-    const dwt = res.dwt;
-    const corr = res.corr;
+    $("kAttained").textContent = fmt(res.attainedGFI, 2);
+    $("kTarget").textContent = fmt(res.targetGFI, 2);
+    $("kEnergy").textContent = `${fmt0(res.totalEnergyMJ)} MJ`;
 
-    function distForThreshold(th){
-      if(th<=0) return NaN;
-      return (totalCO2 * 1e6 * corr) / (dwt * th);
-    }
+    $("kBalance").textContent = res.balanceUnitLabel === "gCO₂e"
+      ? `${(res.balanceDisplay>=0?"+":"")}${fmt(res.balanceDisplay,0)}`
+      : `${(res.balanceDisplay>=0?"+":"")}${fmt(res.balanceDisplay,2)}`;
 
-    // With distance fixed => solve CO2 reduction needed:
-    // attained = totalCO2*1e6/(dwt*distance)*corr <= threshold
-    // => totalCO2 <= threshold * dwt * distance / (1e6*corr)
-    function co2CapForThreshold(th){
-      if(th<=0) return NaN;
-      return (th * dwt * res.distance) / (1e6 * corr);
-    }
+    $("kBalanceUnit").textContent = res.balanceUnitLabel;
 
-    // Grade B and C thresholds
-    const thB = res.thresholds.B;
-    const thC = res.thresholds.C;
+    $("kFuelCost").textContent = `$${fmt(res.fuelCostUSD,0)}`;
+    $("kRUCost").textContent = `$${fmt(res.ruCostUSD,0)}`;
+    $("kSurplusVal").textContent = `$${fmt(res.surplusValueUSD,0)}`;
+    $("kNetTotal").textContent = `$${fmt(res.netUSD,0)}`;
 
-    const distB = distForThreshold(thB);
-    const distC = distForThreshold(thC);
-
-    const capB = co2CapForThreshold(thB);
-    const capC = co2CapForThreshold(thC);
-
-    const redB = (totalCO2>0) ? Math.max(0, (1 - capB/totalCO2) * 100) : 0;
-    const redC = (totalCO2>0) ? Math.max(0, (1 - capC/totalCO2) * 100) : 0;
-
-    $("tDistB").textContent = isFinite(distB) ? fmt0(distB) : "—";
-    $("tDistC").textContent = isFinite(distC) ? fmt0(distC) : "—";
-    $("tCO2B").textContent = isFinite(redB) ? `${fmt(redB,1)}%` : "—";
-    $("tCO2C").textContent = isFinite(redC) ? `${fmt(redC,1)}%` : "—";
-
-    toast("Targets generated", "Review distance and CO₂ reduction paths to reach higher grades.");
+    setStatus(res);
   }
 
   /* -----------------------------
@@ -1067,7 +849,7 @@
   }
 
   function drawGauge(res){
-    const svg = $("gauge");
+    const svg = $("gfiGauge");
     svg.innerHTML = "";
 
     const W=520,H=210;
@@ -1083,33 +865,18 @@
     title.setAttribute("text-anchor","middle");
     title.setAttribute("fill","rgba(233,241,255,.95)");
     title.setAttribute("font-size","13");
-    title.setAttribute("font-weight","900");
-    title.textContent = "CII Performance Gauge";
+    title.setAttribute("font-weight","1000");
+    title.textContent = "GFI Performance Gauge";
     svg.appendChild(title);
 
-    // If no result yet
-    if(!res){
-      const t = svgEl("text");
-      t.setAttribute("x", W/2);
-      t.setAttribute("y", H/2+10);
-      t.setAttribute("text-anchor","middle");
-      t.setAttribute("fill","rgba(169,183,218,.95)");
-      t.setAttribute("font-size","13");
-      t.setAttribute("font-weight","800");
-      t.textContent = "Run a calculation to view results.";
-      svg.appendChild(t);
-      return;
-    }
+    const t = res.targetGFI;
+    const a = res.attainedGFI;
 
-    const req = res.required;
-    const att = res.attained;
-
-    const min = Math.max(0, Math.min(att, req*0.75) * 0.85);
-    const max = Math.max(att, req*1.35) * 1.08;
+    const min = Math.max(0, Math.min(a, t) - 15);
+    const max = Math.max(a, t) + 15;
 
     const sx = (v)=> x0 + ((v-min)/(max-min))*(x1-x0);
 
-    // Band rect helper
     function rect(x,w,fill,stroke){
       const r=svgEl("rect");
       r.setAttribute("x",x);
@@ -1130,52 +897,37 @@
       return l;
     }
     function label(txt, x, yPos, color, bold=false){
-      const t=svgEl("text");
-      t.setAttribute("x",x);
-      t.setAttribute("y",yPos);
-      t.setAttribute("text-anchor","middle");
-      t.setAttribute("fill",color);
-      t.setAttribute("font-size","12");
-      if(bold) t.setAttribute("font-weight","900");
-      t.textContent = txt;
-      return t;
+      const tt=svgEl("text");
+      tt.setAttribute("x",x);
+      tt.setAttribute("y",yPos);
+      tt.setAttribute("text-anchor","middle");
+      tt.setAttribute("fill",color);
+      tt.setAttribute("font-size","12");
+      if(bold) tt.setAttribute("font-weight","1000");
+      tt.textContent = txt;
+      return tt;
     }
 
     // Base bar
-    const base = rect(x0, x1-x0, "rgba(255,255,255,.06)", "rgba(255,255,255,.12)");
-    svg.appendChild(base);
+    svg.appendChild(rect(x0, x1-x0, "rgba(255,255,255,.06)", "rgba(255,255,255,.12)"));
 
-    // Grade boundary values by CII
-    const aMax = res.thresholds.A;
-    const bMax = res.thresholds.B;
-    const cMax = res.thresholds.C;
-    const dMax = res.thresholds.D;
+    const xt = sx(t);
+    svg.appendChild(rect(x0, Math.max(0, xt-x0), "rgba(47,209,132,.16)", "rgba(47,209,132,.20)"));
+    svg.appendChild(rect(xt, Math.max(0, x1-xt), "rgba(255,91,110,.12)", "rgba(255,91,110,.16)"));
 
-    const xa = sx(aMax), xb = sx(bMax), xc = sx(cMax), xd = sx(dMax);
-
-    // Colored segments
-    svg.appendChild(rect(x0, Math.max(0, xa-x0), "rgba(47,209,132,.18)", "rgba(47,209,132,.22)"));
-    svg.appendChild(rect(xa, Math.max(0, xb-xa), "rgba(47,209,132,.12)", "rgba(47,209,132,.18)"));
-    svg.appendChild(rect(xb, Math.max(0, xc-xb), "rgba(255,209,102,.14)", "rgba(255,209,102,.18)"));
-    svg.appendChild(rect(xc, Math.max(0, xd-xc), "rgba(255,91,110,.14)", "rgba(255,91,110,.18)"));
-    svg.appendChild(rect(xd, Math.max(0, x1-xd), "rgba(255,91,110,.10)", "rgba(255,91,110,.14)"));
-
-    // Required line
-    const xreq = sx(req);
-    svg.appendChild(line(xreq, "rgba(255,209,102,.95)", 2));
-    svg.appendChild(label(`Required ${req.toFixed(4)}`, xreq, y-24, "rgba(255,209,102,.95)", true));
+    // Target line
+    svg.appendChild(line(xt, "rgba(255,209,102,.95)", 2));
+    svg.appendChild(label(`Target ${t.toFixed(2)}`, xt, y-24, "rgba(255,209,102,.95)", true));
 
     // Attained marker
-    const xatt = sx(att);
+    const xa = sx(a);
     const marker = svgEl("circle");
-    marker.setAttribute("cx", xatt);
+    marker.setAttribute("cx", xa);
     marker.setAttribute("cy", y+barH/2);
     marker.setAttribute("r", "8");
-    marker.setAttribute("fill", (res.grade.grade==="A"||res.grade.grade==="B") ? "rgba(47,209,132,.95)"
-                         : (res.grade.grade==="C") ? "rgba(255,209,102,.95)"
-                         : "rgba(255,91,110,.95)");
+    marker.setAttribute("fill", (a<=t) ? "rgba(47,209,132,.95)" : "rgba(255,91,110,.95)");
     svg.appendChild(marker);
-    svg.appendChild(label(`Attained ${att.toFixed(4)}`, xatt, y+barH+34, "rgba(233,241,255,.95)", true));
+    svg.appendChild(label(`Attained ${a.toFixed(2)}`, xa, y+barH+34, "rgba(233,241,255,.95)", true));
 
     // Axis labels
     const left = svgEl("text");
@@ -1183,7 +935,7 @@
     left.setAttribute("text-anchor","start");
     left.setAttribute("fill","rgba(169,183,218,.95)");
     left.setAttribute("font-size","11");
-    left.textContent = min.toFixed(2);
+    left.textContent = min.toFixed(1);
     svg.appendChild(left);
 
     const right = svgEl("text");
@@ -1191,14 +943,18 @@
     right.setAttribute("text-anchor","end");
     right.setAttribute("fill","rgba(169,183,218,.95)");
     right.setAttribute("font-size","11");
-    right.textContent = max.toFixed(2);
+    right.textContent = max.toFixed(1);
     svg.appendChild(right);
   }
 
-  function drawBands(res){
-    const svg = $("bandChart");
+  function drawMix(res){
+    const svg = $("mixChart");
     svg.innerHTML = "";
-    const W=520,H=190;
+
+    const W=520,H=200;
+    const padL=18, padR=18;
+    const top=34;
+    const rowH=26;
 
     const title = svgEl("text");
     title.setAttribute("x", W/2);
@@ -1206,37 +962,30 @@
     title.setAttribute("text-anchor","middle");
     title.setAttribute("fill","rgba(233,241,255,.95)");
     title.setAttribute("font-size","13");
-    title.setAttribute("font-weight","900");
-    title.textContent = "Grade Bands";
+    title.setAttribute("font-weight","1000");
+    title.textContent = "Energy share by fuel";
     svg.appendChild(title);
 
-    if(!res){
+    const rows = res.breakdown
+      .filter(r=>r.energyMJ > 0)
+      .sort((a,b)=>b.energyMJ-a.energyMJ)
+      .slice(0,5);
+
+    if(rows.length === 0){
       const t = svgEl("text");
       t.setAttribute("x", W/2);
       t.setAttribute("y", H/2+10);
       t.setAttribute("text-anchor","middle");
       t.setAttribute("fill","rgba(169,183,218,.95)");
       t.setAttribute("font-size","13");
-      t.setAttribute("font-weight","800");
-      t.textContent = "Run a calculation to view grade bands.";
+      t.setAttribute("font-weight","900");
+      t.textContent = "Add fuel consumption to view the mix chart.";
       svg.appendChild(t);
       return;
     }
 
-    const bands = [
-      {grade:"A", max:res.thresholds.A, color:"rgba(47,209,132,.28)"},
-      {grade:"B", max:res.thresholds.B, color:"rgba(47,209,132,.18)"},
-      {grade:"C", max:res.thresholds.C, color:"rgba(255,209,102,.18)"},
-      {grade:"D", max:res.thresholds.D, color:"rgba(255,91,110,.18)"},
-      {grade:"E", max:res.thresholds.E, color:"rgba(255,91,110,.12)"},
-    ];
-
-    const padL=26, padR=20, top=40;
-    const barW = W - padL - padR;
-    const rowH=26;
-
-    // Scale based on D band
-    const maxV = Math.max(res.thresholds.D*1.15, res.attained, res.required) || 1;
+    const total = rows.reduce((s,r)=>s+r.energyMJ,0);
+    const barW = W - padL - padR - 160;
 
     function rect(x,y,w,h,fill,stroke){
       const r=svgEl("rect");
@@ -1253,69 +1002,294 @@
       t.setAttribute("text-anchor",anchor);
       t.setAttribute("fill",color);
       t.setAttribute("font-size","12");
-      if(bold) t.setAttribute("font-weight","900");
+      if(bold) t.setAttribute("font-weight","1000");
       t.textContent=str;
       return t;
     }
 
-    bands.forEach((b,i)=>{
+    rows.forEach((r,i)=>{
       const y = top + i*rowH;
-      const w = Math.max(6, (b.max/maxV) * barW);
-      svg.appendChild(rect(padL, y, w, 18, b.color, "rgba(255,255,255,.10)"));
-      svg.appendChild(txt(b.grade, padL-10, y+13, "end", "rgba(233,241,255,.95)", true));
-      svg.appendChild(txt(b.max.toFixed(4), padL + w + 10, y+13, "start", "rgba(169,183,218,.95)", false));
-    });
+      const pct = r.energyMJ/total;
+      const w = Math.max(8, pct*barW);
 
-    // Attained marker line
-    const xAtt = padL + (res.attained/maxV) * barW;
-    const l = svgEl("line");
-    l.setAttribute("x1", xAtt); l.setAttribute("x2", xAtt);
-    l.setAttribute("y1", top-6); l.setAttribute("y2", top + bands.length*rowH - 6);
-    l.setAttribute("stroke", "rgba(78,161,255,.80)");
-    l.setAttribute("stroke-width","2");
-    svg.appendChild(l);
-    svg.appendChild(txt("Attained", xAtt, top-12, "middle", "rgba(78,161,255,.95)", true));
+      svg.appendChild(txt(r.name.length>18 ? r.name.slice(0,18)+"…" : r.name, padL, y+13, "start", "rgba(233,241,255,.95)", true));
+      svg.appendChild(rect(padL+160, y, w, 18, "rgba(78,161,255,.18)", "rgba(78,161,255,.30)"));
+      svg.appendChild(txt(`${(pct*100).toFixed(1)}%`, padL+160+w+10, y+13, "start", "rgba(169,183,218,.95)", false));
+    });
   }
 
   /* -----------------------------
-     Calculate / targets actions
+     Calculate & UI actions
   ----------------------------- */
   function calculateAndRender(showToast=true){
     const res = compute();
     state.last = res;
+
     renderKPIs(res);
     drawGauge(res);
-    drawBands(res);
+    drawMix(res);
 
     if(showToast){
-      toast("Calculation complete", `Rating ${res.grade.grade} — Attained ${res.attained.toFixed(4)} vs Required ${res.required.toFixed(4)}`);
+      toast("Calculation complete",
+        `Attained ${res.attainedGFI.toFixed(2)} vs Target ${res.targetGFI.toFixed(2)} — ` +
+        (res.attainedGFI <= res.targetGFI ? "Compliant" : "Non-compliant")
+      );
     }
     return res;
   }
 
-  $("btnCalc").addEventListener("click", ()=>calculateAndRender(true));
-  $("btnTargets").addEventListener("click", ()=>{
-    const res = state.last || calculateAndRender(false);
-    generateTargets(res);
+  /* LNG preset -> slip add-on */
+  $("lngPreset").addEventListener("change", ()=>{
+    const p = $("lngPreset").value;
+    const v = LNG_SLIP_PRESETS[p];
+    if(v !== null && v !== undefined){
+      $("lngSlipAddon").value = v.toFixed(1);
+    }
+    persist();
+    if(state.last) calculateAndRender(false);
   });
 
-  // Recalculate on core input changes
-  ["shipType","year","dwt","distance","corr","reqManual"].forEach(id=>{
+  /* Quick year preset for reduction */
+  $("year").addEventListener("change", ()=>{
+    const y = Number($("year").value);
+    const preset = {2028:5, 2029:6, 2030:8, 2031:10, 2032:12, 2035:20, 2040:35, 2050:80}[y];
+    if(preset !== undefined) $("reductionPct").value = preset;
+    persist();
+    if(state.last) calculateAndRender(false);
+  });
+
+  ["refGFI","reductionPct","lngSlipAddon","surplusPrice","ruTier1","ruTier2","unitsBasis"].forEach(id=>{
     $(id).addEventListener("input", ()=>{
+      persist();
       if(state.last) calculateAndRender(false);
     });
     $(id).addEventListener("change", ()=>{
+      persist();
       if(state.last) calculateAndRender(false);
     });
+  });
+
+  $("btnCalc").addEventListener("click", ()=>{
+    persist();
+    calculateAndRender(true);
+  });
+
+  $("btnAddFuel").addEventListener("click", ()=>{
+    state.fuels.push({ id: uid(), name:"Custom fuel", lhv:40000, factor:60.0, tonnes:0, price:0, kind:"CUSTOM" });
+    renderFuelTable();
+    persist();
+  });
+
+  $("btnLoadExample").addEventListener("click", ()=>{
+    $("year").value = "2028";
+    $("refGFI").value = "93.30";
+    $("reductionPct").value = "5.0";
+    $("lngPreset").value = "none";
+    $("lngSlipAddon").value = "0.0";
+    $("unitsBasis").value = "tco2e";
+
+    $("surplusPrice").value = "240";
+    $("ruTier1").value = "145";
+    $("ruTier2").value = "380";
+
+    state.fuels = JSON.parse(JSON.stringify(DEFAULT_FUELS));
+    // Example consumption (edit as needed)
+    state.fuels.find(f=>f.kind==="HFO").tonnes = 1000;
+    state.fuels.find(f=>f.kind==="MGO").tonnes = 150;
+    state.fuels.find(f=>f.kind==="BIO").tonnes = 120;
+    // Example pricing
+    state.fuels.forEach(f=>{
+      if(f.kind==="HFO") f.price = 600;
+      if(f.kind==="MGO") f.price = 850;
+      if(f.kind==="LNG") f.price = 0;
+      if(f.kind==="BIO") f.price = 1200;
+      if(f.kind==="EFUEL") f.price = 0;
+    });
+
+    renderFuelTable();
+    persist();
+    calculateAndRender(true);
+  });
+
+  $("btnReset").addEventListener("click", ()=>{
+    localStorage.removeItem(STORAGE_KEY);
+    state.fuels = JSON.parse(JSON.stringify(DEFAULT_FUELS));
+    state.last = null;
+
+    $("year").value = "2028";
+    $("refGFI").value = "93.30";
+    $("reductionPct").value = "5.0";
+    $("lngPreset").value = "none";
+    $("lngSlipAddon").value = "0.0";
+    $("unitsBasis").value = "tco2e";
+
+    $("surplusPrice").value = "240";
+    $("ruTier1").value = "145";
+    $("ruTier2").value = "380";
+
+    renderFuelTable();
+    clearResults();
+    toast("Reset complete", "Inputs were restored to defaults.");
+  });
+
+  function clearResults(){
+    $("kAttained").textContent = "—";
+    $("kTarget").textContent = "—";
+    $("kEnergy").textContent = "—";
+    $("kBalance").textContent = "—";
+    $("kBalanceUnit").textContent = $("unitsBasis").value === "gco2e" ? "gCO₂e" : "tCO₂e";
+
+    $("kFuelCost").textContent = "—";
+    $("kRUCost").textContent = "—";
+    $("kSurplusVal").textContent = "—";
+    $("kNetTotal").textContent = "—";
+
+    $("statusPill").className = "pill";
+    $("statusPill").innerHTML = `Status: <b>—</b>`;
+
+    $("gfiGauge").innerHTML = "";
+    $("mixChart").innerHTML = "";
+    $("chipYear").textContent = $("year").value;
+    $("chipRef").textContent = fmt(Number($("refGFI").value),2);
+  }
+
+  /* -----------------------------
+     CSV import/export
+     Columns: fuel,lhv_mj_per_t,ghg_gco2e_per_mj,tonnes,price_usd_per_t,kind
+  ----------------------------- */
+  function downloadCSV(filename, csvText){
+    const blob = new Blob([csvText], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function exportCSV(){
+    const header = "fuel,lhv_mj_per_t,ghg_gco2e_per_mj,tonnes,price_usd_per_t,kind";
+    const rows = state.fuels.map(f=>{
+      const cols = [
+        csvEscape(f.name),
+        Number(f.lhv||0),
+        Number(f.factor||0),
+        Number(f.tonnes||0),
+        Number(f.price||0),
+        csvEscape(f.kind||"")
+      ];
+      return cols.join(",");
+    });
+    downloadCSV("gfi_inputs.csv", [header, ...rows].join("\n"));
+    toast("Export complete", "CSV file downloaded.");
+  }
+
+  function csvEscape(s){
+    const str = String(s ?? "");
+    if(str.includes(",") || str.includes('"') || str.includes("\n")){
+      return `"${str.replaceAll('"','""')}"`;
+    }
+    return str;
+  }
+
+  function parseCSV(text){
+    const rows = [];
+    let row = [], cell = "", inQuotes=false;
+    for(let i=0;i<text.length;i++){
+      const ch = text[i];
+      const next = text[i+1];
+      if(ch === '"'){
+        if(inQuotes && next === '"'){ cell += '"'; i++; }
+        else inQuotes = !inQuotes;
+      }else if(ch === ',' && !inQuotes){
+        row.push(cell); cell="";
+      }else if((ch === '\n' || ch === '\r') && !inQuotes){
+        if(ch === '\r' && next === '\n') i++;
+        row.push(cell);
+        rows.push(row);
+        row=[]; cell="";
+      }else{
+        cell += ch;
+      }
+    }
+    row.push(cell);
+    rows.push(row);
+    return rows.map(r=>r.map(c=>c.trim()));
+  }
+
+  function importCSV(file){
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const rows = parseCSV(String(reader.result||""));
+        if(rows.length < 2) throw new Error("CSV empty");
+        const header = rows[0].map(h=>h.toLowerCase());
+        const idx = (k)=>header.indexOf(k);
+
+        const out = [];
+        for(let i=1;i<rows.length;i++){
+          const r = rows[i];
+          if(r.length===1 && !r[0]) continue;
+
+          const name = r[idx("fuel")] ?? r[0];
+          if(!name) continue;
+
+          out.push({
+            id: uid(),
+            name: String(name),
+            lhv: Number(r[idx("lhv_mj_per_t")] ?? r[1]) || 0,
+            factor: Number(r[idx("ghg_gco2e_per_mj")] ?? r[2]) || 0,
+            tonnes: Number(r[idx("tonnes")] ?? r[3]) || 0,
+            price: Number(r[idx("price_usd_per_t")] ?? r[4]) || 0,
+            kind: String(r[idx("kind")] ?? r[5] ?? "").trim()
+          });
+        }
+
+        if(out.length === 0) throw new Error("No rows parsed");
+        state.fuels = out;
+        renderFuelTable();
+        persist();
+        calculateAndRender(true);
+        toast("Import complete", `Loaded ${out.length} fuel rows from CSV.`);
+      }catch(e){
+        console.error(e);
+        toast("Import failed", "Could not parse the CSV. Use the expected columns and numeric values.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  $("btnExportCSV").addEventListener("click", exportCSV);
+  $("btnImportCSV").addEventListener("click", ()=> $("fileCSV").click());
+  $("fileCSV").addEventListener("change", (e)=>{
+    const file = e.target.files?.[0];
+    if(file) importCSV(file);
+    e.target.value = "";
   });
 
   /* -----------------------------
      Init
   ----------------------------- */
+  restore();
+
+  // Sync year/ref chips
+  $("chipYear").textContent = $("year").value;
+  $("chipRef").textContent = fmt(Number($("refGFI").value), 2);
+
+  // Apply LNG preset to slip field if preset is not custom
+  const p0 = $("lngPreset").value;
+  const v0 = LNG_SLIP_PRESETS[p0];
+  if(v0 !== null && v0 !== undefined){
+    $("lngSlipAddon").value = Number(v0).toFixed(1);
+  }
+
   renderFuelTable();
-  renderKPIs(null);
-  drawGauge(null);
-  drawBands(null);
+  clearResults();
+
+  // Auto-calc if there is meaningful consumption
+  const hasConsumption = state.fuels.some(f => (Number(f.tonnes)||0) > 0);
+  if(hasConsumption){
+    calculateAndRender(false);
+  }
 </script>
 </body>
 </html>
